@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        
+        	<script type="text/javascript" src="scripts/demos.js"></script>
+			<script src="../controlador/funciones_procedimientos.js"></script>
+			<script type="text/javascript" src="js/jquery.js"></script>
+			<script src="js/jquery-1.9.1.min.js"></script>
+			<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+			<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+        
+        <script>
+        function loadAjax(datos)
+{
+    if(datos.value!=-1){
+        jQuery("#p1").html("<img alt='cargando' src='img/ajax-loader.gif' />"); //loading gif will be overwrited when ajax have success
+       // jQuery("#p1").load("ajax.php",{dato:datos.value},function(){
+            //action to do when the load has success, maybe an alert(), another load()? all you want in js
+     
+    }
+    }
+
+        </script>
+    </head>
+    <body>
+         <select id="segundos" name="segundos" onchange="loadAjax(this);">
+          <option value="-1" selected="selected"> Selecciona un valor </option>
+          <option value="1">1 segundo. </option>
+          <option value="2">2 segundos. </option>
+          <option value="3">3 segundos. </option>
+          <option value="4">4 segundos. </option>
+          <option value="5">5 segundos. </option>
+      </select>
+        <div id="p1">TODO write content</div>
+        
+        
+        <div class="file-manager"></div>
+    </body>
+</html>

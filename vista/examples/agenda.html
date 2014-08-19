@@ -1,0 +1,563 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+		<title>grupovpc</title>
+
+
+		<!--[if lt IE 9]>
+			<link rel="stylesheet" href="css/sky-forms-ie8.css">
+		<![endif]-->
+		
+		
+		<!--[if lt IE 10]>
+			<script src="js/jquery.placeholder.min.js"></script>
+		<![endif]-->		
+		<!--[if lt IE 9]>
+			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+			<script src="js/sky-forms-ie8.js"></script>
+		<![endif]-->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+		
+		<link rel="stylesheet" href="css/demo.css" />
+		<link rel="stylesheet" href="css/sky-forms.css" />
+		<link rel="stylesheet" href="css/sky-forms-blue.css" />
+        <link rel="stylesheet" href="css/font-awesome.css">
+		<link rel="stylesheet" href="css/sky-mega-menu.css">
+		<link rel="stylesheet" href="css/demo_page.css">
+		<link rel="stylesheet" href="css/demo_table.css">
+	
+		<script src="js/jquery-1.9.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+
+		<!--[if lt IE 9]>
+			<link rel="stylesheet" href="css/sky-forms-ie8.css">
+		<![endif]-->
+		
+		<!--[if lt IE 10]>
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+			<script src="js/jquery.placeholder.min.js"></script>
+		<![endif]-->		
+		<!--[if lt IE 9]>
+			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+			<script src="js/sky-forms-ie8.js"></script>
+		<![endif]-->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>
+	<body class="bg-blue" onLoad="show5()">
+            
+            <div class="body">
+			<!-- mega menu -->
+			<ul class="sky-mega-menu sky-mega-menu-anim-flip sky-mega-menu-response-to-icons">
+				<!-- home -->
+				<!-- <li>
+					<a href="#"><i class="fa fa-single fa-home"></i></a>
+				</li>-->
+				<!--/ home -->
+				
+				<!-- about -->
+				<li aria-haspopup="true">
+					<a href="http://localhost/recuperaciones/examples/agenda.html" ><i class="fa fa-star"></i>AGENDA</a>
+                                        <!--<a href="#"><i class="fa fa-star"></i>AGENDA<i class="fa fa-indicator fa-chevron-down"></i></a>
+					<div class="grid-container3">
+						<ul>
+							<li><a href="#"><i class="fa fa-globe"></i>Mission</a></li>
+							<li aria-haspopup="true">
+								<a href="#"><i class="fa fa-group"></i><i class="fa fa-indicator fa-chevron-right"></i>Our Team</a>
+								<div class="grid-container3">
+									<ul>
+										<li aria-haspopup="true">
+											<a href="#"><i class="fa fa-male"></i><i class="fa fa-indicator fa-chevron-right"></i>Markus Fisher</a>
+											<div class="grid-container3">
+												<ul>
+													<li><a href="#"><i class="fa fa-leaf"></i>About</a></li>
+													<li><a href="#"><i class="fa fa-tasks"></i>Skills</a></li>
+													<li><a href="#"><i class="fa fa-comments"></i>Contacts</a></li>
+												</ul>
+											</div>
+										</li>
+										<li aria-haspopup="true">
+											<a href="#"><i class="fa fa-female"></i><i class="fa fa-indicator fa-chevron-right"></i>Leyla Sparks</a>
+											<div class="grid-container3">
+												<ul>
+													<li><a href="#"><i class="fa fa-leaf"></i>About</a></li>
+													<li><a href="#"><i class="fa fa-tasks"></i>Skills</a></li>
+													<li><a href="#"><i class="fa fa-comments"></i>Contacts</a></li>
+												</ul>
+											</div>
+										</li>
+										<li aria-haspopup="true">
+											<a href="#"><i class="fa fa-male"></i><i class="fa fa-indicator fa-chevron-right"></i>Gleb Ismailov</a>
+											<div class="grid-container3">
+												<ul>
+													<li><a href="#"><i class="fa fa-leaf"></i>About</a></li>
+													<li><a href="#"><i class="fa fa-tasks"></i>Skills</a></li>
+													<li><a href="#"><i class="fa fa-comments"></i>Contacts</a></li>
+												</ul>
+											</div>
+										</li>
+										<li><a href="#"><i class="fa fa-female"></i>Viktoria Gibbers</a>
+									</li>
+									</ul>
+								</div>
+							</li>
+							<li><a href="#"><i class="fa fa-trophy"></i>Rewards</a></a></li>
+							<li><a href="#"><i class="fa fa-certificate"></i>Certificates</a></a></li>
+						</ul>
+					</div>-->
+				</li>
+				<!--/ about -->
+				
+				<!-- news -->
+				<li aria-haspopup="true">
+                                    <a href="http://localhost/recuperaciones/examples/expediente.html?#_"><i class="fa fa-bullhorn"></i>EXPEDIENTE</a>
+					<!--<a href="#"><i class="fa fa-bullhorn"></i>EXPEDIENTE<i class="fa fa-indicator fa-chevron-down"></i></a>
+					<div class="grid-container3">
+						<ul>
+							<li><a href="#"><i class="fa fa-check"></i>Company</a></li>
+							<li><a href="#"><i class="fa fa-check"></i>Products</a></li>
+							<li><a href="#"><i class="fa fa-check"></i>Specials</a></li>
+						</ul>
+					</div>
+				</li>-->
+				<!--/ news -->
+				
+				<!-- portfolio -->
+				<li aria-haspopup="true">
+                                    <a href="#"><i class="fa fa-briefcase"></i>Portfolio</a>
+					<!--<a href="#"><i class="fa fa-briefcase"></i>Portfolio<i class="fa fa-indicator fa-chevron-down"></i></a>
+					<div class="grid-container3">
+						<ul>
+							<li><a href="#"><i class="fa fa-lemon-o"></i>Logos</a></li>
+							<li><a href="#"><i class="fa fa-globe"></i>Websites</a></li>
+							<li><a href="#"><i class="fa fa-th-large"></i>Branding</a></li>
+							<li><a href="#"><i class="fa fa-picture-o"></i>Illustrations</a></li>
+						</ul>
+					</div>-->
+				</li>
+				<!--/ portfolio -->
+				
+				<!-- blog -->
+				<li>
+					<a href="#"><i class="fa fa-edit"></i>DIRECTORIOS</a>
+				</li>
+				<!--/ blog -->
+				
+				<!-- contacts -->
+				<li class="right">
+					<a href="#">SALIR</a>
+				</li>
+				<!--/ contacts -->
+			</ul>
+			<!--/ mega menu -->
+			
+		</div>
+		<div class="body">			
+		
+			<!-- Red color scheme -->
+			<form action=""  name="clock" class="sky-form" />
+				<!--<header>Blue color scheme</header>-->
+				<header  >
+                                <span id="liveclock" style="position:absolute;left:0;top:0;"></span>
+                                <label class="label" >USUARIO: Armando Ytriago (CU001)</label>
+                                </header>
+				<fieldset>
+                                    <div class="row">
+						<section class="col col-6">
+                                                        <div class="row"> 
+                                                          
+                                                            <label class="label">MONTO DE LA AGENDA:</label>
+                                                          
+                                                            <label class="input_m" >
+                                                            <input type="text" name="campo" value="2.000" disabled />
+                                                        </div> 
+                                                         <div class="row"> 
+                                                             <label class="label"></label>
+                                                            <label class="label">MONTO POR DEUDOR:</label>
+                                                            <label class="input_m" >
+                                                            <input type="text" name="campo" value="2.000" disabled />
+                                                        </div>  <div class="row">
+                                                            <label class="label"></label>
+                                                            <label class="label">CEDULAS GESTIONADAS:</label>
+                                                            <label class="input_m" >
+                                                            <input type="text" name="campo" value="2.000" disabled />
+                                                        </div>
+						</label>
+						</section>
+                                        	<section class="col col-6">
+                                                        <div class="row">
+                                                            
+                                                            <label class="label">GESTIONES REALIZADAS:</label>
+                                                            <label class="input_m" >
+                                                            <input type="text" name="campo" value="2.000" disabled />
+                                                        </DIV>   
+                                                        <div class="row">  
+                                                            <label class="label">PENDIENTE</label>
+                                                            <label class="input_m" >
+                                                            <input type="text" name="campo" value="2.000" disabled />
+                                                        </div>  <div class="row"> 
+                                                            <label class="label">PENDIENTE</label>
+                                                            <label class="input_m" >
+                                                            <input type="text" name="campo" value="2.000" disabled />
+                                                        </div>
+						</section>
+                                        
+                                              </div>   
+                                    </fieldset>
+                                <fieldset>
+                                    
+                                    
+		<div id="container">
+                            
+			<h1>Live example</h1>
+                        <p><a href="javascript:void(0);" onclick="fnClickAddRow();">Click to add a new row</a></p>
+                        
+                        <h1>Ocultar Columnas</h1>
+                        <a href="javascript:void(0);" onclick="fnShowHide(0);">Toggle column 1<br></a>
+			<a href="javascript:void(0);" onclick="fnShowHide(1);">Toggle column 2<br></a>
+			<a href="javascript:void(0);" onclick="fnShowHide(2);">Toggle column 3<br></a>
+			<a href="javascript:void(0);" onclick="fnShowHide(3);">Toggle column 4<br></a>
+			<a href="javascript:void(0);" onclick="fnShowHide(4);">Toggle column 5<br></a>
+                        
+                        <h1>Seleccion</h1>
+                        <a href="javascript:void(0);" onclick="alert(fnGetSelected(oTable))">Subir<br></a>
+                        <a href="javascript:void(0)" id="delete">Delete selected row</a>
+                        
+			<div id="demo">
+                            
+                            <form id="form">
+
+                            
+<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
+	<thead>
+		<tr>
+			<th>Check</th>
+			<th>Rendering engine</th>
+			<th>Browser</th>
+			<th>Platform(s)</th>
+			<th>Engine version</th>
+			<th>CSS grade</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr  id="1"  class="gradeX">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Trident</td>
+			<td>Internet Explorer 4.0</td>
+			<td>Win 95+</td>
+			<td class="center">4</td>
+			<td class="center">X</td>
+		</tr>
+		<tr id="2"  class="gradeC">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Trident</td>
+			<td>Internet Explorer 5.0</td>
+			<td>Win 95+</td>
+			<td class="center">5</td>
+			<td class="center">C</td>
+		</tr>
+		<tr id="3" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Trident</td>
+			<td>Internet Explorer 5.5</td>
+			<td>Win 95+</td>
+			<td class="center">5.5</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="4" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Trident</td>
+			<td>Internet Explorer 6</td>
+			<td>Win 98+</td>
+			<td class="center">6</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="5" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Trident</td>
+			<td>Internet Explorer 7</td>
+			<td>Win XP SP2+</td>
+			<td class="center">7</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="6" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Trident</td>
+			<td>AOL browser (AOL desktop)</td>
+			<td>Win XP</td>
+			<td class="center">6</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="7" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Gecko</td>
+			<td>Firefox 1.0</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td class="center">1.7</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="8" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Gecko</td>
+			<td>Firefox 1.5</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td class="center">1.8</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="9" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Gecko</td>
+			<td>Firefox 2.0</td>
+			<td>Win 98+ / OSX.2+</td>
+			<td class="center">1.8</td>
+			<td class="center">A</td>
+		</tr>
+		<tr  id="10" class="gradeA">
+			<td class="center"><input type="checkbox" name="check1" value="1"></td>
+			<td>Gecko</td>
+			<td>Firefox 3.0</td>
+			<td>Win 2k+ / OSX.3+</td>
+			<td class="center">1.9</td>
+			<td class="center">A</td>
+		</tr>
+            </tbody>
+			</table>
+			<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%">
+				<tfoot>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</tfoot>
+			</table>
+			
+			</div>
+					</div>
+		
+                                    </fieldset>
+                                     <fieldset>
+                                         <section class="col col-6">
+                                         <label class="checkbox"><input type="checkbox" name="checkbox"  /><i></i>REPORTE DE PAGO</label>
+                                          <label class="checkbox"><input type="checkbox" name="checkbox" /><i></i>REPORTE ESTADISTICO(ADMIN)</label>
+                                         </section>
+                                         <section class="col col-6">
+                                         <label class="checkbox"><input type="checkbox" name="checkbox"  /><i></i>RESUMEN DE PORTAFOLIO(ADMIN)</label>
+                                         </section>
+                                         <section class="col col-6">
+                                         <button type="submit" class="button">GENERAR</button>
+                                         </section>
+                                      </fieldset>   
+                                        <fieldset>
+					<button type="submit" class="button">Enviar a expediente</button>
+					<button type="button" class="button button-secondary" onclick="window.history.back();">Back</button>
+				 </fieldset> 
+			</form>
+			<!--/ Red color scheme -->	
+                        
+		</div>
+            <script type="text/javascript">
+		var oTable;
+		var asInitVals = new Array();
+           
+(function($) {
+			/*
+			 * Function: fnGetColumnData
+			 * Purpose:  Return an array of table values from a particular column.
+			 * Returns:  array string: 1d data array 
+			 * Inputs:   object:oSettings - dataTable settings object. This is always the last argument past to the function
+			 *           int:iColumn - the id of the column to extract the data from
+			 *           bool:bUnique - optional - if set to false duplicated values are not filtered out
+			 *           bool:bFiltered - optional - if set to false all the table data is used (not only the filtered)
+			 *           bool:bIgnoreEmpty - optional - if set to false empty values are not filtered from the result array
+			 * Author:   Benedikt Forchhammer <b.forchhammer /AT\ mind2.de>
+			 */
+			$.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+				// check that we have a column id
+				if ( typeof iColumn == "undefined" ) return new Array();
+				
+				// by default we only want unique data
+				if ( typeof bUnique == "undefined" ) bUnique = true;
+				
+				// by default we do want to only look at filtered data
+				if ( typeof bFiltered == "undefined" ) bFiltered = true;
+				
+				// by default we do not want to include empty values
+				if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
+				
+				// list of rows which we're going to loop through
+				var aiRows;
+				
+				// use only filtered rows
+				if (bFiltered == true) aiRows = oSettings.aiDisplay; 
+				// use all rows
+				else aiRows = oSettings.aiDisplayMaster; // all row numbers
+			
+				// set up data array	
+				var asResultData = new Array();
+				
+				for (var i=0,c=aiRows.length; i<c; i++) {
+					iRow = aiRows[i];
+					var aData = this.fnGetData(iRow);
+					var sValue = aData[iColumn];
+					
+					// ignore empty values?
+					if (bIgnoreEmpty == true && sValue.length == 0) continue;
+			
+					// ignore unique values?
+					else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
+					
+					// else push the value onto the result data array
+					else asResultData.push(sValue);
+				}
+				
+				return asResultData;
+			}}(jQuery));
+			
+			
+			function fnCreateSelect( aData,num )
+			{
+			if (num != 0 ){
+			/*	var r='<select hidden ="true"><option value=""></option>', i, iLen=aData.length;
+				for ( i=0 ; i<iLen ; i++ )
+				{
+					r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+				}
+				r+='</select>';
+			}else{*/
+				var r='<select><option value=""></option>', i, iLen=aData.length;
+				for ( i=0 ; i<iLen ; i++ )
+				{
+					r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+				}
+				r+='</select>';
+			}
+				return r;
+			}
+			
+			$(document).ready(function() {
+				var oTable = $('#example').dataTable( {
+					"bSortClasses": false,
+					"sScrollY": "200px",
+					"bPaginate": false,
+					"bScrollCollapse": false
+				} );
+							
+				 $("tfoot input").keyup( function () {
+					/* Filter on the column (the index) of this element */
+					oTable.fnFilter( this.value, $("tfoot input").index(this) );
+				} );
+				 
+     
+				/*
+				 * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+				 * the footer
+				 */
+				$("tfoot input").each( function (i) {
+					asInitVals[i] = this.value;
+				} );
+				 
+				$("tfoot input").focus( function () {
+					if ( this.className == "search_init" )
+					{
+						this.className = "";
+						this.value = "";
+					}
+				} );
+				 
+				$("tfoot input").blur( function (i) {
+					if ( this.value == "" )
+					{
+						this.className = "search_init";
+						this.value = asInitVals[$("tfoot input").index(this)];
+					}
+				} );
+							
+				/*oTable.$('td').hover( function() {
+					var iCol = $('td', this.parentNode).index(this) % 5;
+					$('td:nth-child('+(iCol+1)+')', oTable.$('tr')).addClass( 'highlighted' );
+				}, function() {
+					oTable.$('td.highlighted').removeClass('highlighted');
+				} );          */
+                                
+					$("#example tbody tr").click( function( e ) {
+					if ( $(this).hasClass('row_selected') ) {
+						$(this).removeClass('row_selected');
+					}
+					else {
+						oTable.$('tr.row_selected').removeClass('row_selected');
+						$(this).addClass('row_selected');
+					}
+				});
+            
+				$('#delete').click( function() {
+					var anSelected = fnGetSelected( oTable );
+					if ( anSelected.length !== 0 ) {
+						oTable.fnDeleteRow( anSelected[0] );
+					}
+				} );
+            
+                 $('#form').submit( function() {
+					var sData = oTable.$('input').serialize();
+					alert( "The following data would have been submitted to the server: \n\n"+sData );
+					return false;
+				} );
+				
+				oTable = $('#example').dataTable();
+				
+				/* Add a select menu for each TH element in the table footer */
+				$("tfoot th").each( function ( i ) {
+					//para poder usar el check
+					if (i != 0 ){
+						this.innerHTML = fnCreateSelect( oTable.fnGetColumnData(i),i);
+					}
+					$('select', this).change( function () {
+						oTable.fnFilter( $(this).val(), i );
+					} );
+				} );
+                                
+                  		     /*
+                                $('#example tr').click( function() {
+					$(this).toggleClass('row_selected');
+				} );
+			
+         *
+         * */ 
+                
+			} );
+
+                        function fnClickAddRow() {
+				$('#example').dataTable().fnAddData( [
+					"1.1",
+                                        "1.2",
+                                        "1.3",
+                                        "1.4",
+                                        "1.5",
+                                        '<input type="checkbox" name="check22" value="22"></td>']);
+				
+				
+			}
+                        
+                        function fnShowHide( iCol )
+			{
+				
+				var oTable = $('#example').dataTable();
+				
+				var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+				oTable.fnSetColumnVis( iCol, bVis ? false : true );
+			}
+                        
+                        
+                        function fnGetSelected( oTableLocal )
+			{
+				return oTableLocal.$('tr.row_selected');
+			}
+                        
+                        
+		</script>
+	</body>
+</html>
