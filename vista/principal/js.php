@@ -7,6 +7,7 @@
 			<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
                         <script src="js/alertify.js"></script>
                         <script src="js/jquery.numeric.js"></script>
+                        <script src="js/validaciones.js"></script>
 		<!--[if lt IE 10]>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="js/jquery.placeholder.min.js"></script>

@@ -111,7 +111,7 @@ $sms='
 
 
                                             	<!-- tabs -->
-                                <div class="sky-tabs sky-tabs-pos-top-left sky-tabs-anim-scale sky-tabs-response-to-icons">
+                                <div id="capaSMS" class="sky-tabs sky-tabs-pos-top-left sky-tabs-anim-scale sky-tabs-response-to-icons">
                                 
                                 
 

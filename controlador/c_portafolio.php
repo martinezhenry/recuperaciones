@@ -264,7 +264,7 @@ function cargarFiltroscuentas($campos){
     $sql = str_replace('{F_FECHA_PROX_GESTION}','',$sql);
     $resp = false;
             global $conex;
-
+            $sql .= " order by ".str_replace('DISTINCT','',$campos); 
         $st = $conex->consulta($sql);
 
          while ($fila = $conex->fetch_array($st)){
@@ -349,6 +349,8 @@ if (isset($_GET['cargarAsignaciones']))
     $_SESSION['sql_inicio'] = 0;
     $_SESSION['sql_fin'] = RANGO_BUSQUEDA;
     
+  //  echo "cargarAsig";
+   // exit();
   
     if ($tipo != "0") // ================== ASESOR ==========================
         {
@@ -358,7 +360,12 @@ if (isset($_GET['cargarAsignaciones']))
            
             $sql = "SELECT {CAMPOS}
                         FROM ( 
- SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -405,9 +412,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+      --  AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                         
                       ";
             
@@ -418,8 +425,13 @@ select CU.PERSONA,
                 if ($status == "0"){
                     
                     $sql = "  SELECT {CAMPOS}
-                        FROM (
-                            SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                        FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -472,9 +484,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+      --  AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
 
                                     ";
                        
@@ -483,8 +495,13 @@ select CU.PERSONA,
             //$usuario = $_GET['usuario'];
             
             $sql = "SELECT {CAMPOS}
-                FROM (
-                SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                    FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -537,9 +554,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+      --  AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                 
                 ";
                 }
@@ -551,8 +568,13 @@ select CU.PERSONA,
                 if ($status == "0"){
                     
                                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                   FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -605,9 +627,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+       -- AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                          
                        ";
                     
@@ -615,8 +637,13 @@ select CU.PERSONA,
                 } else {
                 
                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                        FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -669,9 +696,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+       -- AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                          
                        ";
                 
@@ -698,8 +725,13 @@ select CU.PERSONA,
             if ($status == "0"){
                 
                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                       SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                       FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -747,17 +779,22 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+      --  AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                          
                         "; 
                 
             } else {
                 
                      $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                          FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -805,9 +842,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+      --  AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                          
                          ";
                 
@@ -818,8 +855,13 @@ select CU.PERSONA,
         } else if ($filtro == "aprobarAreas"){
             
             $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -866,9 +908,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN} 
                          ";
             
             
@@ -886,8 +928,13 @@ select CU.PERSONA,
                  if ($filtro == "NULL"){
                 
                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                        FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -934,9 +981,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                          
                          ";
             
@@ -949,8 +996,13 @@ select CU.PERSONA,
                 if ($status == "0"){
                     
                     $sql= "SELECT {CAMPOS}
-                            FROM (
-                            SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                          FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1003,15 +1055,20 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                             ";    
                 } else {
                 
                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                    FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1064,9 +1121,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+      --  WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                         "; 
                 }
                 
@@ -1078,8 +1135,13 @@ select CU.PERSONA,
                 if ($status == "0"){
                     
                                     $sql="SELECT {CAMPOS}
-                           FROM (
-                            SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                           FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1132,16 +1194,21 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                            "; 
                 
                 } else {
                 
                 $sql = "SELECT {CAMPOS}
-                            FROM (
-                           SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                         FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1194,11 +1261,11 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+      --  WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                          
-                             "; 
+         "; 
                 
                 
             } 
@@ -1218,8 +1285,13 @@ select CU.PERSONA,
             if ($status == "0"){
                 // BUSQUEDA DE TODAS LAS AREAS POR CLIENTE
                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                       SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                       FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1267,16 +1339,21 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+      --  AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                          
                          "; 
                 
             } else {
             $sql= "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                    FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1324,9 +1401,9 @@ select CU.PERSONA,
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
         AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+     --   AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+        --WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                          
                          "; 
             
@@ -1337,8 +1414,13 @@ select CU.PERSONA,
             } else if ($filtro == "aprobarAreas"){
                 
                 $sql = "SELECT {CAMPOS}
-                        FROM (
-                        SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) as TIPO_GESTION, rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
+                                      FROM ( 
+ SELECT p.PERSONA, p.CEDULA, p.NOMBRE, p.CUENTA,p.CLIENTE, p.SITUACION_CUENTA, p.PRODUCTO, p.SALDO_ACTUAL, p.SALDO_INICIAL, p.ASESOR, p.FECHA_ASIGNACION,
+ CASE
+ WHEN trunc(Q.FECHA_INGRESO) > trunc(P.FECHA_ASIGNACION) THEN DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION)
+ ELSE 'SIN GESTION (ASIGNACION)'
+ END TIPO_GESTION,
+ rownum NUMFILA, Q.FECHA_PROXIMA_GESTION from            
 (SELECT  l.PERSONA, l.CEDULA, l.NOMBRE, l.CUENTA, l.CLIENTE, l.SITUACION_CUENTA, l.PRODUCTO, l.SALDO_ACTUAL, l.SALDO_INICIAL, l.ASESOR, l.FECHA_ASIGNACION,max(K.GESTION ) as gestion
 FROM ( 
 select CU.PERSONA, 
@@ -1365,11 +1447,11 @@ select CU.PERSONA,
             and CA.CLIENTE = CLI.CLIENTE 
                         AND CU.AREA_DEVOLUCION IS NULL
                         AND CU.STATUS_CUENTA = 'A'
-                        and CU.USUARIO_GESTOR IN (SELECT USUARIO FROM SR_USUARIO L WHERE L.USUARIO_SUPERIOR = '$usuario' )
-                         AND  CLI.NOMBRE LIKE '%{F_CLIENTE}%'
-                        AND CASE WHEN (SUBSTR(TRIM(CU.CUENTA),1,1)) IN ('5','4','3') OR (SUBSTR(TRIM(CU.CUENTA),1,2)) IN ('03')  THEN 'TDC' ELSE 'CXC' END LIKE '%{F_PRODUCTO}%'
-                        AND case WHEN decode(CU.SITUACION_CUENTA,'C','CAST.','VENC.') = '' THEN decode(CU.SALDO_ACTUAL,CU.SALDO_INICIAL ,'CAST.','VENC.') ELSE decode(CU.SITUACION_CUENTA,'C','CAST.','VENC.') END LIKE '%{F_SITUACION_CUENTA}%'
-                        AND TO_CHAR(CU.FECHA_ASIG_GESTOR, 'DD/MM/YYYY') LIKE '%{F_FECHA_ASIGNACION}%'
+                        and CU.USUARIO_GESTOR IN (SELECT USUARIO FROM SR_USUARIO L WHERE L.USUARIO_SUPERIOR = 'S5702' )
+                --         AND  CLI.NOMBRE LIKE '%%'
+              --          AND CASE WHEN (SUBSTR(TRIM(CU.CUENTA),1,1)) IN ('5','4','3') OR (SUBSTR(TRIM(CU.CUENTA),1,2)) IN ('03')  THEN 'TDC' ELSE 'CXC' END LIKE '%%'
+            --            AND case WHEN decode(CU.SITUACION_CUENTA,'C','CAST.','VENC.') = '' THEN decode(CU.SALDO_ACTUAL,CU.SALDO_INICIAL ,'CAST.','VENC.') ELSE decode(CU.SITUACION_CUENTA,'C','CAST.','VENC.') END LIKE '%%'
+          --              AND TO_CHAR(CU.FECHA_ASIG_GESTOR, 'DD/MM/YYYY') LIKE '%%'
                         ) l
            LEFT  JOIN sr_gestion k
           on   K.CUENTA = l.cuenta
@@ -1384,10 +1466,10 @@ select CU.PERSONA,
         and Y.GRUPO_GESTION (+) = Q.GRUPO_GESTION
         and Y.TABLA_GESTION (+) = Q.TABLA_GESTION
         and Q.GESTION (+)= p.gestion
-        AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%{F_TIPO_GESTION}%'
-        AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%{F_FECHA_PROX_GESTION}%'
+       -- AND DECODE(Y.DESCRIPCION, '','SIN GESTION',Y.DESCRIPCION) LIKE '%%'
+        --AND TO_CHAR(Q.FECHA_PROXIMA_GESTION, 'DD/MM/YYYY') LIKE '%%'
         ) TL 
-        WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
+       -- WHERE TL.NUMFILA BETWEEN '{SQLINICIO}' AND {SQLFIN}
                         ";
                 
             }
@@ -1438,12 +1520,12 @@ select CU.PERSONA,
         
   if ($agrega == "NULL")
   {
-      $arrfiltros = array('cliente' => 'DISTINCT CLIENTE',
-                        'producto' => 'DISTINCT PRODUCTO',
-                        'situacion_cuenta' => 'DISTINCT SITUACION_CUENTA',
-                        'tipo_gestion' => 'DISTINCT TIPO_GESTION',
-                        'fecha_asignacion' => 'DISTINCT TO_CHAR(FECHA_ASIGNACION,\'DD/MM/YYYY\')',
-                        'fecha_prox_gestion' => 'DISTINCT TO_CHAR(FECHA_PROXIMA_GESTION,\'DD/MM/YYYY\')'
+      $arrfiltros = array('cliente' => 'DISTINCT ·CLIENTE·',
+                        'producto' => 'DISTINCT ·PRODUCTO·',
+                        'situacion_cuenta' => 'DISTINCT ·SITUACION_CUENTA·',
+                        'tipo_gestion' => 'DISTINCT ·TIPO_GESTION·',
+                        'fecha_asignacion' => 'DISTINCT TO_CHAR(·FECHA_ASIGNACION·,\'DD/MM/YYYY\')',
+                        'fecha_prox_gestion' => 'DISTINCT TO_CHAR(·FECHA_PROXIMA_GESTION·,\'DD/MM/YYYY\')'
           );
       
       $arrEtiqueta = array(
@@ -1456,8 +1538,9 @@ select CU.PERSONA,
           
           
       );
-      
+      /*
        if (is_array($cuentasAsignadas)){
+           
       echo '<div id="filtros_sql">';
      
       foreach ($arrfiltros as $key => $value){
@@ -1465,6 +1548,9 @@ select CU.PERSONA,
           if (is_array($resp)){
               echo '<select style="width : 180px;" onchange="busquedaPorFiltros();" id="'.$key.'" name="'.$key.'">';
               echo '<option value="">'.$arrEtiqueta[$key].'</option>';
+              
+            //  asort($resp);
+              
               foreach ($resp as $value) {
                   echo '<option value="'.$value[0].'">'.$value[0].'</option>';
               }
@@ -1476,18 +1562,10 @@ select CU.PERSONA,
     
     echo '
          </div>';
-         //$filtro;
-    //  $filtro = array_unique($cuentasAsignadas['CLIENTE']);
-     /* foreach ($cuentasAsignadas as $key => $value) {
-         $filtro_[] = $value['CLIENTE'];
-        // print_r($filtro);
-         
-      }*/
-       //  print_r(array_unique($filtro_));
-   //print_r($cuentasAsignadas);
+
            
       }
-      
+      */
     
    
     
@@ -1600,8 +1678,8 @@ select CU.PERSONA,
     
     $usuarioTraslado = $_GET['usuarioTraslado'];
     //session_start();
-    //$usuarioSolicitante = $_SESSION['USER'];
-    $usuarioSolicitante = "GTE01";
+    $usuarioSolicitante = $_SESSION['USER'];
+    //$usuarioSolicitante = "GTE01";
     reasignarCuentas($usuarioSolicitante, $traslados, $usuarioTraslado);
     
    
@@ -1635,7 +1713,7 @@ select CU.PERSONA,
    $clientes = cargarClientes($_GET['usuario']);
    
    if (is_array($clientes)){
-       
+                  echo "<option selected disabled value=''>Seleccione...</option>";
        foreach ($clientes as $value) {
            
            echo "<option value='".$value['CLIENTE']."'>".$value['NOMBRE']."</option>";

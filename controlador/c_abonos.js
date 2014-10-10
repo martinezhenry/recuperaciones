@@ -25,7 +25,9 @@ function cargarAbonos(cuenta)
         {
 
             contenedor.innerHTML = ajax.responseText;
+           ///   $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
             llamaTodo('abonos-Tabla');
+            $('#AgregarActivo').val('0');
                          
 
         }
@@ -60,7 +62,11 @@ function guardarAbonos(cuenta)
     
     var contenedor = document.getElementById('guardarContenedor');
     
-    var ajax = nuevoAjax();
+    
+    if ($('#archivo').val() != ''){
+        
+    
+             var ajax = nuevoAjax();
     
     ajax.onreadystatechange = function()
     {
@@ -69,30 +75,102 @@ function guardarAbonos(cuenta)
 
             //contenedor.innerHTML = ajax.responseText;
            // alert(ajax.responseText);
-           
-                         
-                 if (ajax.responseText == 1) {
+             var resp = ajax.responseText.split(';');
+               if (resp[0] == 1) {
+      
                    
-                   alertify.success("Abono Guardado.");
-                    cargarAbonos(cuenta);
+        var inputFileImage = document.getElementById("archivo");
+
+        var file = inputFileImage.files[0];
+        var nota = "";
+        var data = new FormData();
+
+        data.append('archivo',file);
+
+              $.ajax({
+            url:'../controlador/subirarchivos/c_subirArchivos.php?abono='+resp[1], //Url a donde la enviaremos
+            type:'POST', //Metodo que usaremos
+            contentType:false, //Debe estar en false para que pase el objeto sin procesar
+            data:data, //Le pasamos el objeto que creamos con los archivos
+            processData:false, //Debe estar en false para que JQuery no procese los datos a enviar
+            cache:false //Para que el formulario no guarde cache
+          }).done(function(msg){
+              
+              
+            alert(msg); //Mostrara los archivos cargados en el div con el id "Cargados"
+
+            if (msg == '1'){
+
+               nota = 'Se Cargo El Archivo';
+   
+          } else 
+               nota = 'Error Al Cargar El Archivo';
+           
+           cargarAbonos(cuenta);
+             });
+                         
+             
+                 //  cargarAbonos(cuenta);
+                   alertify.success("Abono Guardado . "+nota);
+                    $('#AgregarActivo').val('0');
+                   
+                 //  $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
+                   $('#gestiones-2').click();
                } else {
                    
-                   alertify.error(ajax.responseText);
+                   alertify.error(resp[0]+" "+nota);
                    return;
                }
                          
-
+                        
         }
     }
 
-    ajax.open("GET", "../controlador/c_deudor.php?guardarAbonos=si&cliente="+cliente+"&cartera="+cartera+"&tipoCuenta="+tipoCuenta+"&usuarioGestor="+usuarioGestor+"&numeroDeposito="+numeroDeposito+"&fechaDeposito="+fechaDeposito+"&montoDeposito="+montoDeposito+"&formaPago="+formaPago+"&banco="+banco+"&statusAbono="+statusAbono+"&observacion="+observacion+"&fechaIngreso="+fechaIngreso+"&cuota="+cuota+"&numCuenta="+cuenta, true);
-    ajax.send();
+   ajax.open("GET", "../controlador/c_deudor.php?guardarAbonos=si&cliente="+cliente+"&cartera="+cartera+"&tipoCuenta="+tipoCuenta+"&usuarioGestor="+usuarioGestor+"&numeroDeposito="+numeroDeposito+"&fechaDeposito="+fechaDeposito+"&montoDeposito="+montoDeposito+"&formaPago="+formaPago+"&banco="+banco+"&statusAbono="+statusAbono+"&observacion="+observacion+"&fechaIngreso="+fechaIngreso+"&cuota="+cuota+"&numCuenta="+cuenta, true);
+   ajax.send();
+  
+          
+    } else {
+        
+        var ajax = nuevoAjax();
     
+    ajax.onreadystatechange = function()
+    {
+        if (ajax.readyState == 4)
+        {
+
+            //contenedor.innerHTML = ajax.responseText;
+           // alert(ajax.responseText);
+             var resp = ajax.responseText.split(';');
+               if (resp[0] == 1) {
+      
+                   
+        
+                   alertify.success("Abono Guardado. ");
+                      $('#AgregarActivo').val('0');
+                     $('#gestiones-2').click();
+               } else {
+                   
+                   alertify.error(resp[0]);
+                   return;
+               }
+                         
+                        
+        }
+    }
+
+   ajax.open("GET", "../controlador/c_deudor.php?guardarAbonos=si&cliente="+cliente+"&cartera="+cartera+"&tipoCuenta="+tipoCuenta+"&usuarioGestor="+usuarioGestor+"&numeroDeposito="+numeroDeposito+"&fechaDeposito="+fechaDeposito+"&montoDeposito="+montoDeposito+"&formaPago="+formaPago+"&banco="+banco+"&statusAbono="+statusAbono+"&observacion="+observacion+"&fechaIngreso="+fechaIngreso+"&cuota="+cuota+"&numCuenta="+cuenta, true);
+   ajax.send();
+  
+        
+        
+    }
 }
 
 
 function eliminarAbono()
 {
+   // alert('abonos');
     var idAbonos = "";
    
     var cuenta = document.getElementById('cuentaActual').value;
@@ -110,7 +188,7 @@ function eliminarAbono()
             if (count == 0)
             {
                 agrega = "";
-                
+               /// cargarSoporte();
             } else
             {
                 agrega = ",";
@@ -130,10 +208,15 @@ function eliminarAbono()
                 {
                     
                  var contenedor = ajax.responseText;
-                 if (contenedor == "elimino")
+                 
+              //   alert(contenedor);
+                 if (contenedor == 1)
                  {
                     cargarAbonos(cuenta);
                     alert("Eliminado(s) con Existo");
+                 } else {
+                     
+                     alert(contenedor);
                  }
     
                 }
@@ -404,3 +487,33 @@ function guardarModificacionA(){
     
 }
 
+function cargarSoporte(){
+    
+var inputFileImage = document.getElementById("archivo");
+
+var file = inputFileImage.files[0];
+
+var data = new FormData();
+
+data.append('archivo',file);
+
+      $.ajax({
+    url:'../controlador/subirarchivos/c_subirArchivos.php', //Url a donde la enviaremos
+    type:'POST', //Metodo que usaremos
+    contentType:false, //Debe estar en false para que pase el objeto sin procesar
+    data:data, //Le pasamos el objeto que creamos con los archivos
+    processData:false, //Debe estar en false para que JQuery no procese los datos a enviar
+    cache:false //Para que el formulario no guarde cache
+  }).done(function(msg){
+    alert(msg); //Mostrara los archivos cargados en el div con el id "Cargados"
+    
+    if (msg == '1'){
+        
+        return 1;
+        
+    } else 
+        return 0;
+    
+  });
+    
+}

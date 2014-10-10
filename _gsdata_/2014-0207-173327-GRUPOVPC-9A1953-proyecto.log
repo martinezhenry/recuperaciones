@@ -1,0 +1,13 @@
+2014-02-07 17:33:27: -- proyecto: ANÁLISIS comenzado por On File Change, After Delay en ordenador 'GRUPOVPC-9A1953' (GoodSync v 9.7.5.5)
+2014-02-07 17:33:27: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-07 17:33:27: Change in: C:/xampp/htdocs/Proyecto_recuperaciones/vista/sms.php
+2014-02-07 17:33:27: Cambios: 1, Conflictos: 0, TiempoCopia: 0, EstadoCopia: 0/0, Errores: 0
+2014-02-07 17:33:27: Right to Left: Copy File: 1 
+2014-02-07 17:33:27: -- Análisis Completado. Tiempo 00:00:00, Velocidad: Many archivo/s
+2014-02-07 17:33:28: == proyecto: SINC comenzada por On File Change, After Delay en 'GRUPOVPC-9A1953'
+2014-02-07 17:33:28: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-07 17:33:29: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/sms.php' -> 'ftp://192.20.15.157/vista/sms.php'
+2014-02-07 17:33:29: Guardar archivo de estado ftp://192.20.15.157/_gsdata_/_file_state_v4._gs
+2014-02-07 17:33:31: Elementos Sincronizados OK: 1, Errores: 0
+2014-02-07 17:33:31: == Sinc. Completa. Tiempo: 00:00:03, Velocidad: 52,3 KB/s
+2014-02-07 17:33:31: 

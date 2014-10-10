@@ -1,177 +1,108 @@
 <?php
 //session_start();
  //Llamado a la conexion de la BD
+@session_start();
 include_once ("../modelo/conexion.php");
 $conex = new oracle($_SESSION['USER'], $_SESSION['pass']);//Objeto de la clase oracle
 
 
-//Comprueba que variable GET no este vacia
-if (!isset($_GET))
-{
-    $i = 0;
-    $Escribe = $_GET['cedula'];
-
-    //obtenemos los numeros de telefonos de la persona
-    $arregloTelefonos = obtenerCorreosPersona($Escribe);
+function cargarEmail($persona){
     
-    if (is_array($arregloTelefonos))
-    {
-    $telefonos="";
     
-    echo '
-        <br><br>
-        <table  width=\'100%\'>
-        <thead>
-        <tr style="background-color:#2da5da;">
-        <th><input onclick="activarDesactivarChecks(document.getElementsByName(\'checksTelefonos\'), document.getElementById(\'checkGlobal\'));" type = "checkbox" id="checkGlobal"></th>
-        <th>Correos</th>
-        </tr>
-        </thead>
+    $sql = "SELECT a.direccion, a.status_email, decode(a.status_email, 'A', 'Activo', 'Inactivo') as status_desc, a.id_email, B.PARENTESCO
+            FROM tg_persona_email a, sr_parentesco b where A.ID_PARENTESCO = B.ID_PAR and a.persona = '$persona' order by status_email";
+    global $conex;
+    $st = $conex->consulta($sql);
+    
+    while ($fila = $conex->fetch_array($st)) {
         
-        <tbody>';
-    foreach ($arregloTelefonos as $value)
-    {
-        if ($i%2 == 0)
-        {
-            $pintar = 'style="background-color:#f0ffff;"';
-        } else
-        {
-            $pintar = "";
-        }
+        $filas[] = $fila;
         
-      
-           
-    $telefonos .= '<tr align ="center" '.$pintar.'>
-                <td><input name="checksTelefonos" id="'.$value['EMAIL'].'" value= "'.$value['EMAIL'].'" type="checkbox"></td>
-                <td>'.$value['EMAIL'].'</td>
-                </tr>'; 
-    $i++;
         
     }
-        echo $telefonos;
-        echo"</tbody></table>";
-      
-    } else
-    {
-        echo "$arregloTelefonos";
-    }
-    unset($_GET);
-    exit();
+    
+    return (isset($filas)) ? $filas:false;
+    
+    
 }
 
 
- 
- //
- //Obtine las Plantillas de la BD   
- //
- function cargarPlantilas1()
- {
-    //Declaracion de varable global para la conexion
-    global $conn;
-    global $conex;
-    //Query para obtener los registros
-    $sql = "Select id, texto_A, texto_b from SR_SMS_TEXTO";  
+function guardarEmails($persona, $modif, $new){
     
-    
-    $st = $conex -> consulta($sql);
-    // preparamos el statement para la consulta  
-    //$st = oci_parse($conn,$sql);
-    //ejecutamos el query  
-    //oci_execute($st);
-    //$filas[] = array();
- 
-    
-   // if ($numrows > 0)
-   // {
-        
-    while ($fila = $conex -> fetch_array($st)) 
-    {
-        $filas[] = $fila;
-
-    }
-    
-    /*} else
-    {
-
-        $filas = "No Existen Datos de Plantillas";
-        
-    }*/
-    
-    unset($st);
-    unset($fila);
-    unset($sql);
-    return $filas;
-    
- }   
- 
- //
- //Obtiene la CANTIDAD de SMS entrantes no leidos de la BD
- //
- 
- 
- //
- //Obtiene los correos de la persona
- //
- function obtenerCorreosPersona($idPersona)
- {
-    //Declaracion de varable global para la conexion
-    global $conn;
     global $conex;
     
-    
-    $sql2 = "SELECT PERSONA FROM tg_persona WHERE ID = '$idPersona'";
-    
-    $st2 = $conex -> consulta($sql2);
-    
-    //$st2 = oci_parse($conn,$sql2);
-    //oci_execute($st2);
-    //$contador = count(oci_fetch_assoc($st2));
-    
+ if ($modif != null){
+    foreach ($modif as $value) {
         
-   // $numrows = filas($st2, $filas);
-    
-      //  $filas = "La Cedula no se Encuentra Registrada";
-       
-       /*
-        foreach ($filas as $value)
-            {
-                $id = $value[0];
-            }
-        */
-      $fila = $conex -> fetch_array($st2);
-      
-    //Query para obtener los registro
-    $sql = "select E.EMAIL from SR_EMAIL E WHERE E.ID_PERSONA = '".$fila['PERSONA']."'";   
-    // preparamos el statement para la consulta  
-    $st = $conex -> consulta($sql);
-    //ejecutamos el query  
-    //oci_execute($st);
-    //$contador = count( oci_fetch_assoc($st));
-    
-    //$numrows = filas($st,$filas);
-    $filas = array();
-    while($row = $conex -> fetch_array($st)){
+        $sql = "update tg_persona_email set status_email = '".$value[1]."' where id_email = '".$value[0]."'";
+        $st = $conex->consulta($sql);
         
-        $filas[]= $row; 
-        
-    } 
-   /* 
-    if (count($filas) == 0){
-        echo $filas = "No Hay Correo electronicos para esta persona";
-        exit();
     }
-   */
-     return $filas;
- 
-    unset($st);
-    unset($sql);
-    unset($fila);
-    unset($st2);
-    //unset($numrows);
-   
-    //return   $st.$filas.$otras;
-    //liberamos memoria
-   
  }
+  if ($new != null){
+    foreach ($new as $value) {
+        if (empty($value)){
+            return 0;
+        }
+        $sql = "INSERT INTO tg_persona_email (DIRECCION, STATUS_EMAIL, PERSONA, id_parentesco) VALUES ('$value[0]', 'A', '$persona', '$value[1]')";
+       // echo $sql;
+        $st = $conex->consulta($sql);
+    }
+  }
+    return 1;
+}
+
+
+function cargarParentesco(){
+    
+    $sql = "SELECT * FROM SR_PARENTESCO";
+    global $conex;
+    $st=$conex->consulta($sql);
+    while($fila = $conex->fetch_array($st)){
+        $filas[] = $fila;
+    }
+    
+    return (isset($filas)) ? $filas:0;
+}
+
+
+if (isset($_POST['cargarEmail'])){
+    
+    $emails = cargarEmail($_POST['persona']);
+    
+    
+    if (!$emails) {
+        
+        echo "0";
+        
+    } else {
+        
+        echo json_encode($emails);
+       
+    }
+    exit();
+    
+} else if (isset($_POST['guardarEmails'])){
+    
+    $editar = (isset($_POST['ids'])) ? $_POST['ids']:null;
+    $new = (isset($_POST['nuevos'])) ? $_POST['nuevos']:null;
+   $resp = guardarEmails($_POST['persona'], $editar, $new);
+    if ($resp)
+        echo "1";
+    else
+        echo "0";
+    exit();
+} else if (isset($_POST['cargarParentesco'])){
+    
+    $resp = cargarParentesco();
+    if ($resp != 0){
+        echo json_encode($resp);
+    } else {
+        echo "0";
+    }
+
+}
+
+    
 
 ?>

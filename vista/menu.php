@@ -1,9 +1,10 @@
 <?php
 //conexion con oracle
   //include("../modelo/conexion.php");
+/*
   include("sms.php");
   include("llamadas.php");
-  include("email.php");
+  include("C:\xampp\htdocs\recuperaciones\vista\expediente\contenedor\emails\email.php");
 
 	$id = 'menu1';
 if(isset($_GET['pantalla'])){
@@ -286,3 +287,4 @@ contadorSMSRecibios();
 
 </script>
 
+*/

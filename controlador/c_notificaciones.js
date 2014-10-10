@@ -99,6 +99,8 @@ function cambiarStatus(id){
 		  data: parametros,
 		  
 		  success: function(result) {
+                      
+                   //   alert(result);
                       cargarNotificaciones();
                       obtenerNoLeidos();
                   

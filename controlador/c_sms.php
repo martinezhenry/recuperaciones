@@ -12,7 +12,7 @@ require_once 'c_autorizar.php';
     $id = 1;
     if (!autorizar($id, $_SESSION['USER'])){
         
-        return "No Autorizado!";
+        echo "No Autorizado!";
         
     } else {
         global $conex;
@@ -27,7 +27,7 @@ require_once 'c_autorizar.php';
         $contenidoDelSMS = $parametros['contenidoSMS'];
 
 
-        print_r($telefonosAEnviar);
+      //  print_r($telefonosAEnviar);
         
         
         if (isset($parametros['recordatorio'])){
@@ -112,7 +112,7 @@ require_once 'c_autorizar.php';
 if (!empty($_POST))
 {
     
-    
+   
     //Verificamos que formulario se esta enviando
    if (isset($_POST['form_Enviar']))
    {
@@ -335,7 +335,7 @@ if (!empty($_GET))
                         . "<td><div id='contenido".$i."' hidden class='content' style='height:15px; overflow: hidden;'>".$value['CONTENIDO_SMS']."</div><div class='a' onclick='popupAExpediente(document.getElementById(\"personaResp".$i."\").innerHTML);' style='height:15px; overflow: hidden;'>".$value['CEDULA']."</div></td>"
                         . "<td><div class='fecha' style='height:15px; overflow: hidden;'>".$value['FECHA_ENTREGA']."</div>"
                         . ""
-                        . "<div id='".$value['NUMERO_TELEFONO']."' onclick='responderSMS(".$i.");' class='a' >Responder</div><div hidden id='cedulaResp".$i."'>".$value['CEDULA']."</div><div hidden id='personaResp".$i."'>".$value['ID_PERSONA']."</div>"
+                        . "<div id='".$value['NUMERO_TELEFONO']."' onclick='responderSMS(".$i.");' class='a' >Responder</div><div hidden id='cedulaResp".$i."'>".$value['CEDULA']."</div><div hidden id='personaResp".$i."'>".trim($value['ID_PERSONA'])."</div>"
                         . "</td>"
                        
                         . "</tr>";
@@ -395,6 +395,8 @@ if (!empty($_GET))
         
         
         $sql = "SELECT TEXTO_A FROM SR_PLANTILLAS WHERE ID = '$idPlantilla'";
+        
+      //  echo $sql;
         $st = $conex -> consulta($sql);
         $value = $conex -> fetch_array($st);
         $texto = $value[0];

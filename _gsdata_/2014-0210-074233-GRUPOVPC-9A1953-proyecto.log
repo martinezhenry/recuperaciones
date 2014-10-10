@@ -1,0 +1,14 @@
+2014-02-10 07:42:33: -- proyecto: ANÁLISIS comenzado por On File Change 1st Full Analyze en ordenador 'GRUPOVPC-9A1953' (GoodSync v 9.7.5.5)
+2014-02-10 07:42:33: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-10 07:42:34: I: Archivos: 1.375 (excluidos 4). Carpetas: 65 (excluidas 1). FTP: FileZilla Server version 0.9.41 betawritten by Tim Kosse (Tim.Kosse@gmx.de)Please visit http://sourceforge.net/projects/filezill ...
+2014-02-10 07:42:34: D: Archivos: 1.375 (excluidos 4). Carpetas: 65 (excluidas 1). C: NTFS, Libre: 450 GB, Total: 465 GB
+2014-02-10 07:42:34: Cambios: 1, Conflictos: 0, TiempoCopia: 0, EstadoCopia: 0/0, Errores: 0
+2014-02-10 07:42:34: Right to Left: Copy File: 1 
+2014-02-10 07:42:34: -- Análisis Completado. Tiempo 00:00:01, Velocidad: 1.445 archivo/s
+2014-02-10 07:42:34: == proyecto: SINC comenzada por On File Change 1st Full Analyze en 'GRUPOVPC-9A1953'
+2014-02-10 07:42:34: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-10 07:42:35: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/sms.php' -> 'ftp://192.20.15.157/vista/sms.php'
+2014-02-10 07:42:36: Guardar archivo de estado ftp://192.20.15.157/_gsdata_/_file_state_v4._gs
+2014-02-10 07:42:38: Elementos Sincronizados OK: 1, Errores: 0
+2014-02-10 07:42:38: == Sinc. Completa. Tiempo: 00:00:04, Velocidad: 26,2 KB/s
+2014-02-10 07:42:38: 

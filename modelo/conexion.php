@@ -5,10 +5,10 @@ Clase para para la conexion con la base de datos
 */
 class oracle{
     
- //private $servidor = '192.20.15.77/vpc';
- //static $ser = '192.20.15.77/vpc';
- private $servidor = '192.20.15.29/orcl.oficinacentral.vpc2.com';
- static $ser = '192.20.15.29/orcl.oficinacentral.vpc2.com';
+ private $servidor = '192.20.15.77/vpc';
+ static $ser = '192.20.15.77/vpc';
+ //private $servidor = '192.20.15.29/orcl.oficinacentral.vpc2.com';
+ //static $ser = '192.20.15.29/orcl.oficinacentral.vpc2.com';
  private $conexion;
  private $usuario;
  private $password;
@@ -78,7 +78,7 @@ class oracle{
  */
   function consulta($sql)
  {
-    //echo $sql;
+   // echo $sql;
    $inicio = microtime(true);
 	$this->conectar();
     
@@ -101,7 +101,7 @@ class oracle{
     $q = oci_parse($this->conexion,"INSERT INTO SR_SEGUIMIENTO (QUERY, USUARIO, TIEMPO_EJECUCION, DIRECCION_IP, SISTEMA) VALUES (:sql, '$this->usuario', '$total', '$ip', 'RECUPERACIONES')");
     oci_bind_by_name($q, ":sql", $sql);
     //Ejecutamos la sentencia en oracle 
-    $r = oci_execute($q);
+   // $r = oci_execute($q);
     $this->disconnect();
    // echo $sql;
     unset($q, $r);

@@ -19,11 +19,56 @@ function cargarAsignaciones(agrega,usuario, identificador, filtro, status, clien
     usuarioActual.value = usuario;
     activarDesactivarSelects(['filtroExoneracion', 'filtroConvenio', 'filtroArea'], 1);
     activarDesactivarBotones(['btnVerExpediente']);
-   
+   var url  = "";
     
     add_progreso(15);
+    
+        if (status) {
+     
+        if (status != "-1"){
+             
+         url = "../controlador/c_portafolio.php?cargarAsignaciones=si&usuario=" + usuario + "&identificador=" + identificador + "&filtro="+filtro+"&status="+status+"&agrega="+agrega+"&cliente="+cliente;
+     } else {
+         
+         filtro = "NULL";
+         url = "../controlador/c_portafolio.php?cargarAsignaciones=si&usuario=" + usuario + "&identificador=" + identificador +"&agrega="+agrega+"&cliente="+cliente+"&filtro="+filtro;
+     }
+         
+    } else {
+  
+         url = "../controlador/c_portafolio.php?cargarAsignaciones=si&usuario=" + usuario + "&identificador=" + identificador + "&filtro="+filtro+"&agrega="+agrega+"&cliente="+cliente;
+        
+    }
+    
+    $.ajax({
+        
+        type : 'get',
+        url : url,
+        success : function(resp){
+            //alert(resp);
+             contenedor.innerHTML = resp;
+            llamaTodo('asignaciones-Tabla');
+         
+             stop_progreso(); 
+             
+        }
+        
+    }).done(function(){
+        
+          posicionScroll();
+                 $('.dataTables_scrollHeadInner table thead tr th:first').off('click');
+   
+                 duplicar();
+                 
+             // CUENTA Y MUESTRA LA CANTIDAD DE CUENTAS TOTALES
+             contarCuentas();
+             // SUMA Y MUESTRA LA CANTIDAD DE SALDOS TOTALES
+             sumarSaldos();
+        
+    });
+    
+    /*
         var ajax = nuevoAjax();
-
 
     ajax.onreadystatechange = function()
     {
@@ -41,8 +86,8 @@ function cargarAsignaciones(agrega,usuario, identificador, filtro, status, clien
         if (ajax.readyState == 2)
         {
             add_progreso(50);
-         
-            //contenedor.innerHTML = "Cargando...";
+            contenedor.innerHTML = "Cargando...2";
+           //contenedor.innerHTML = "Cargando...";
            // jQuery("#contenedor-TablaPortafolio").html("<img alt='cargando' src='img/ajax-loader.gif' />");
            
         }
@@ -50,6 +95,7 @@ function cargarAsignaciones(agrega,usuario, identificador, filtro, status, clien
         if (ajax.readyState == 3)
         {
             add_progreso(75);
+            contenedor.innerHTML = "Cargando...3";
             //contenedor.innerHTML = "Cargando...";
            // jQuery("#contenedor-TablaPortafolio").html("<img alt='cargando' src='img/ajax-loader.gif' />");
            
@@ -58,7 +104,7 @@ function cargarAsignaciones(agrega,usuario, identificador, filtro, status, clien
         if (ajax.readyState == 4)
         {
            add_progreso(90);
-          
+        //  alert(ajax.responseText);
             contenedor.innerHTML = ajax.responseText;
             llamaTodo('asignaciones-Tabla');
          
@@ -102,7 +148,7 @@ function cargarAsignaciones(agrega,usuario, identificador, filtro, status, clien
    
     ajax.send();
     
-
+*/
     
     
 }
@@ -246,7 +292,7 @@ function reasignarCuentas()
         {
 
            alert(ajax.responseText);
-           cargarAsignaciones('NULL',usuario,  identificador, filtro);
+           cargarAsignaciones('NULL',usuario,  identificador, filtro, $('#statusUsado').val(), $('#clienteActual').val());
            
           
         }
@@ -298,6 +344,8 @@ function verExpediente(){
     var checks = document.getElementsByName('checkPortafolio[]');
   
     var formulario = document.getElementById('form_envio');
+    
+ 
     
     		var count = 0;
 		var telefonos = '';
@@ -484,7 +532,7 @@ function cargarClientes(usuario){
         data : {usuario : usuario, cargarClientes : 1 },
         url : '../controlador/c_portafolio.php',
         success : function (resp){
-         
+        // alert(resp);
             $('#selcCliente').html(resp);
             
         }
@@ -591,7 +639,7 @@ function posicionScroll(){
 function agregarFila(){
   //  alert('s');
       // alert($('#asignaciones-Tabla').height());
-      
+      /*
         $.ajax({
             
             
@@ -638,7 +686,7 @@ function agregarFila(){
         });
         
     
-    
+    */
 }
 
 function busquedaPorFiltros(){

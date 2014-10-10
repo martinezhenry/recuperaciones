@@ -1,0 +1,15 @@
+2014-02-06 10:34:12: -- proyecto: ANÁLISIS comenzado por On File Change, After Delay en ordenador 'GRUPOVPC-9A1953' (GoodSync v 9.7.5.5)
+2014-02-06 10:34:12: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-06 10:34:12: Change in: C:/xampp/htdocs/Proyecto_recuperaciones/vista/sms.php
+2014-02-06 10:34:12: Change in: C:/xampp/htdocs/Proyecto_recuperaciones/controlador/c_sms.js
+2014-02-06 10:34:12: Cambios: 2, Conflictos: 0, TiempoCopia: 0, EstadoCopia: 0/0, Errores: 0
+2014-02-06 10:34:12: Right to Left: Copy File: 2 
+2014-02-06 10:34:12: -- Análisis Completado. Tiempo 00:00:00, Velocidad: Many archivo/s
+2014-02-06 10:34:13: == proyecto: SINC comenzada por On File Change, After Delay en 'GRUPOVPC-9A1953'
+2014-02-06 10:34:13: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-06 10:34:13: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/controlador/c_sms.js' -> 'ftp://192.20.15.157/controlador/c_sms.js'
+2014-02-06 10:34:13: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/sms.php' -> 'ftp://192.20.15.157/vista/sms.php'
+2014-02-06 10:34:13: Guardar archivo de estado ftp://192.20.15.157/_gsdata_/_file_state_v4._gs
+2014-02-06 10:34:15: Elementos Sincronizados OK: 2, Errores: 0
+2014-02-06 10:34:15: == Sinc. Completa. Tiempo: 00:00:02, Velocidad: 0 bytes/s
+2014-02-06 10:34:15: 

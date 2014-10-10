@@ -1332,15 +1332,15 @@ function crearReporteControlPago(){
                         
                        // alert(fecha_selected);
                         
-                        var dia, mes, año;
+                        var dia, mes, ano;
                         
                         var fecha_sel_arr = fecha_selected.split('/');
                         
                         dia = fecha_sel_arr[0];
                         mes = fecha_sel_arr[1];
-                        año = fecha_sel_arr[2];
+                        ano = fecha_sel_arr[2];
                         
-                        fecha_selected = 'f_'+parseInt(dia)+(parseInt(mes)-1)+año+'_f'; //Formamos el ID 
+                        fecha_selected = 'f_'+parseInt(dia)+(parseInt(mes)-1)+ano+'_f'; //Formamos el ID 
                         
                         //fecha_selected = fecha_selected.replace('/','');
                         
@@ -1430,12 +1430,12 @@ function crearReporteControlPago(){
 				}*/
                               //  alert(fechas_feriados[x]);
                         var fecha_sel_arr2 = fechas_feriados[x].split('/');
-                        var dia2, mes2, año2;
+                        var dia2, mes2, ano2;
                         dia2 = fecha_sel_arr2[0];
                         mes2 = fecha_sel_arr2[1];
-                        año2 = fecha_sel_arr2[2];
+                        ano2 = fecha_sel_arr2[2];
                       
-                        fecha_selected = 'f_'+parseInt(dia2)+(parseInt(mes2)-1)+año2+'_f'; //Formamos el ID 
+                        fecha_selected = 'f_'+parseInt(dia2)+(parseInt(mes2)-1)+ano2+'_f'; //Formamos el ID 
         
 				//alert(fecha_selected);
 				//alert(fecha_selected); //Depuracion

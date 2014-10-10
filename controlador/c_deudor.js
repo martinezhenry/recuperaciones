@@ -31,6 +31,7 @@ function consultarDeudor(identificador, Persona)
         $('#gestiones-Tabla > tbody').remove();
         document.getElementById('sky-tab-1-2').disabled = false;
         document.getElementById('sky-tab1-3').disabled = false;
+        document.getElementById('sky-tab1-4').disabled = false;
         
         var y = [];
      

@@ -110,7 +110,7 @@ function generarExoneracion(cuenta)
     var tipoPago = document.getElementById('tipoPago').value;
     var cuotas = document.getElementById('cuotasExoneracion').value;
     var fechaCuotas = document.getElementById('fechaCuotasExoneracion').value;
-  
+    var fechaPago = document.getElementById('FechaPago').value;
     
     var ajax = nuevoAjax();
 
@@ -124,8 +124,10 @@ function generarExoneracion(cuenta)
         {
 
            alert(ajax.responseText);
+           window.open('reportes/exoneracionBanesco.php?cliente='+cliente+'&cartera='+cartera+'&cuenta='+cuenta+'&fechaPago='+fechaPago,'reporte');
            cargarExoneraciones(cuenta);
                          
+
 
         }
     }
@@ -211,6 +213,33 @@ function aprobarExoneracion(checks)
     alert("Debe Seleccionar la Exoneración a Aprobar");
     
 }
+}
+
+
+function inactivarExoneracion(cuenta, cliente, cartera){
+    
+    alert(cuenta);
+    var parametros = {
+        
+        inactivarExoneracion : 1,
+        cuenta : cuenta,
+        cliente : cliente,
+        cartera:cartera
+        
+    };
+    $.ajax({
+        
+        type : 'post',
+        data : parametros,
+        url : '../controlador/c_exoneraciones.php',
+        success : function(resp){
+            alert(resp);
+        }
+        
+        
+    });
+    
+    
 }
 
 /*

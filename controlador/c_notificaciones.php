@@ -59,15 +59,15 @@ function enviarNotificacion($user_destino, $contenido){
     $usuario = $_SESSION['USER'];
     
     
-    $sql = "Select SQ_NOTIFICACIONES.nextval from dual";
+   // $sql = "Select SQ_NOTIFICACIONES.nextval from dual";
     
-    $st = $conex -> consulta($sql);
-    $fila = $conex->fetch_array($st);
+   // $st = $conex -> consulta($sql);
+   // $fila = $conex->fetch_array($st);
     // Se le asigna el valor del arreglo a una variable
-    $idNoti = $fila[0];
+   // $idNoti = $fila[0];
     
-    $sql = "INSERT INTO SR_NOTIFICACIONES (ID_NOTIFICACION, CONTENIDO, FECHA, ID_GESTOR, ID_GESTOR_DESTINO)
-            VALUES ('$idNoti', '$contenido', SYSDATE, '$usuario', '$user_destino') ";
+    $sql = "INSERT INTO SR_NOTIFICACIONES (CONTENIDO, FECHA, ID_GESTOR, ID_GESTOR_DESTINO)
+            VALUES ('$contenido', SYSDATE, '$usuario', '$user_destino') ";
      if ($st = $conex -> consulta($sql))
      {
          return true;
@@ -201,14 +201,17 @@ function cargarDestinatarios($usuario){
     
 }
 
-function cambiarStatus($id){
+function cambiarStatus($id_noti){
          $id = 43;
+         
     if (!autorizar($id, $_SESSION['USER'])){
         return false;
         
     } else {
+       
     global $conex;
-    $sql = "update sr_notificaciones set status = 1 where id_notificacion = $id";
+    $sql = "update sr_notificaciones set status = 1 where id_notificacion = $id_noti";
+  //   echo "$id";
     $st = $conex -> consulta($sql);
     exit();
     }

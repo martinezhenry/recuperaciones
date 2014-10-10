@@ -1224,6 +1224,9 @@ echo '<section class="col col-6" id="pepito" style="width: 252px;float: rigth;mi
    * con el simbolo %, para luego medite jquery separarlas dos cadenas. 
    */
   private function obtener_fechas_cal($Fecha_p, $Fecha_u, $asesor) {
+      
+    //  echo $Fecha_p." esta es la fechassss ".$Fecha_u;
+      
     IF (!empty($Fecha_u)) {
       $sql = "SELECT to_char(trunc(FECHA),'DD/MM/YYYY') as fecha 
               FROM SR_AGENDA 
@@ -1260,8 +1263,10 @@ echo '<section class="col col-6" id="pepito" style="width: 252px;float: rigth;mi
        // print_r($fecha_tope);
         $this->fecha_ultima_gestion = $fecha_tope.'[SEPAR2]';
        // print_r($Fecha_u[0].' fechaaaa');
+      
     $result = $this->conn->fetch_array_matriz($this->conn->consulta($sql));
-    $sql = "SELECT to_char(DIA,'DD/MM/YYYY') as dia, DESCRIPCION FROM SR_CALENDARIO WHERE TRIM(DESCRIPCION)<>'DOMINGO' AND DIA >= '$Fecha_p' AND DIA <= '".$Fecha_u."'";
+    $sql = "SELECT to_char(DIA,'DD/MM/YYYY') as dia, DESCRIPCION FROM SR_CALENDARIO WHERE TRIM(DESCRIPCION)<>'DOMINGO' AND DIA >= '$Fecha_p' AND DIA <= '$Fecha_u'";
+      //echo $sql;
     $result2 = $this->conn->fetch_array_matriz($this->conn->consulta($sql));
     $cadena_fechas = '';
     if(isset($result) || isset($result2)){

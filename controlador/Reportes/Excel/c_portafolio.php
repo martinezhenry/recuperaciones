@@ -36,6 +36,8 @@ require_once ($_SESSION['ROOT_PATH']."/controlador/c_portafolio.php");
                          CU.USUARIO_GESTOR as asesor,
                          TO_CHAR(CU.FECHA_ASIG_GESTOR, 'dd/mm/yyyy') as fecha_asignacion,
                          CODGES.DESCRIPCION AS TIPO_GESTION,
+                         GES.FECHA_PROMESA,
+                         GES.FECHA_PROXIMA_GESTION,
                          ROWNUM NUMFILA
                          from sr_cuenta cu, tg_persona pe, tg_cliente cli, sr_cartera ca, sr_usuario us, sr_codigo_gestion codges, SR_GESTION ges
                          where CU.CARTERA = CA.CARTERA 

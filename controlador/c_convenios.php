@@ -265,7 +265,21 @@ if (isset($_GET['cargarConvenios'])) //=========================================
         $cuotas = $_GET['cuotas'];
         $usuario = "session";
         $fecha = date("d/m/Y");
-
+               $sql = "Select cuenta from sr_cuenta where cliente = '$cliente' and cartera = '$cartera' and cuenta = '$cuenta' and area_devolucion is not null";
+        
+        $st = $conex->consulta($sql);
+        
+        while ($fila = $conex->fetch_array($st)){
+            
+            $filas[] = $fila;
+            
+        }
+        
+        if (isset($filas)){
+            
+            return "No se puede cargar un abono en una cuenta que esta en area de devolucion";
+            
+        }
         
         $sql = " Select SQ_CONVENIO.nextval from dual";
         $st = $conex->consulta($sql);

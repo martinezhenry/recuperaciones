@@ -18,15 +18,15 @@ function cargarAsignaciones(cuenta)
     var saldoAnterior = document.getElementById('saldoAnteriorAsignacion');
     var saldoActual = document.getElementById('saldoActualAsignacion');
     var fechaVencimiento = document.getElementById('fechaVencimientoAsignacion');
-    var areaDevolucion = document.getElementById('areaDevolucionAsignacion');
-    var fechaDevolucion = document.getElementById('fechaDevolucionAsignacion');
+   // var areaDevolucion = document.getElementById('areaDevolucionAsignacion');
+   // var fechaDevolucion = document.getElementById('fechaDevolucionAsignacion');
     var Devolucion = document.getElementById('devolucionAsignacion');
     var usuarioGestor = document.getElementById('usuarioGestorAsignacion');
     var fechaAsignada = document.getElementById('fechaAsignadaAsignacion');
     var fechaPrimeraAsignacion = document.getElementById('fechaPrimeraAsignacionAsignacion');
     var statusCuenta = document.getElementById('statusCuentaAsignacion');
     var tipoCredito = document.getElementById('tipoCreditoAsignacion');
-    var sticker = document.getElementById('stickerAsignacion');
+  //  var sticker = document.getElementById('stickerAsignacion');
     var gestionada = document.getElementById('gestionadaAsignacion');
     var observacionInterna = document.getElementById('observacionInternaAsignacion');
     var observacionExterna = document.getElementById('observacionExternaAsignacion');
@@ -36,8 +36,18 @@ function cargarAsignaciones(cuenta)
     var tipoAsignacion = document.getElementById('tipoAsignacionAsignacion');
     var fechaAsignacion = document.getElementById('fechaAsignacionAsignacion');
     var interesesMora = document.getElementById('interesesMoraAsignacion');
-    var montoTotal = document.getElementById('montoTotalAsignacion');
+   // var montoTotal = document.getElementById('montoTotalAsignacion');
     var capitalVencido = document.getElementById('capitalVencidoAsignacion');
+    // nuevas
+    var fechaCastigo = document.getElementById('fechaCastigoAsignacion');
+    var fechaLiquidacion = document.getElementById('fechaLiquidacionAsignacion');
+    var diasMora = document.getElementById('diasMoraAsignacion');
+    var fechaUltPago = document.getElementById('fechaUltPagoAsignacion');
+    var montoUltPago = document.getElementById('montoUltPagoAsignacion');
+    var capital = document.getElementById('capitalAsignacion');
+    var intereses = document.getElementById('interesesNormalesAsignacion');
+    
+    
     
     // Se desactiva el boton agregar
     desactivarBntAgregar();
@@ -52,7 +62,7 @@ function cargarAsignaciones(cuenta)
         {
 
             var cadena = ajax.responseText;
-           
+          //alert(cadena);
             var y = [];
             y = cadena.split("*");
            
@@ -74,15 +84,15 @@ function cargarAsignaciones(cuenta)
             saldoAnterior.value = y[5];
             saldoActual.value = y[6];
             fechaVencimiento.value = y[7];
-            areaDevolucion.value = y[8];
-            fechaDevolucion.value = y[9];
+     //       areaDevolucion.value = y[8];
+       //     fechaDevolucion.value = y[9];
             Devolucion.value = y[10];
             usuarioGestor.value = y[11];
             fechaAsignada.value = y[12];
             fechaPrimeraAsignacion.value = y[13];
             statusCuenta.value = y[14];
             tipoCredito.value = y[15];
-            sticker.value = y[16];
+           // sticker.value = y[16];
             gestionada.value = y[17];
             observacionInterna.value = y[18];
             observacionExterna.value = y[19];
@@ -91,9 +101,17 @@ function cargarAsignaciones(cuenta)
             tipoCuentaCliente.value = y[22];
             tipoAsignacion.value = y[23];
             fechaAsignacion.value = y[24];
-            interesesMora.value = y[25];
-            montoTotal.value = y[26];
-            capitalVencido.value = y[27];
+            interesesMora.value = y[31];
+          //  montoTotal.value = y[26];
+            fechaCastigo.value = y[28];
+            fechaLiquidacion.value = y[29];
+            diasMora.value = y[27];
+            fechaUltPago.value = y[37];
+            montoUltPago.value = y[36];
+            capital.value = y[34];
+            capitalVencido.value = y[35];
+            intereses.value = y[30];
+           // alert(y.length);
         }
 
         }

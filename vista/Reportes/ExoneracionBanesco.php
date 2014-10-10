@@ -5,6 +5,7 @@ ob_end_clean();
              require_once('tcpdf/tcpdf.php');
              require_once '../../core/convertirdor.php';
              require_once '../moneda/moneda.php';
+             require_once '../../modelo/conexion.php';
              //require_once 'clasePDF.php';
              
              class MYPDF extends TCPDF {
@@ -43,18 +44,76 @@ ob_end_clean();
             $porcentaje = $_POST['porcentaje'];
             $fechaPago = $_POST['fechaPago'];
             */
+
+
+        if (isset($_GET['cliente']) && isset($_GET['cartera']) && isset($_GET['cuenta'])){
             
-            $fecha = date("d/m/Y");
-            $nombre = "Henry";
-            $cedula = "124568";
-            $fechaPago = "hoy";
-            $monto = 2000.25;
-            $porcentaje = 35;
-            $tarjeta = '5401393009463053';
-            $saldoActual = 7000.00;
-            $montoExonerar = 2000.00;
-            $montoCancelar = $saldoActual - $montoExonerar;
-            $fechaPago = '28/06/2014';
+            $cliente = $_GET['cliente'];
+            $cartera = $_GET['cartera'];
+            $cuenta = $_GET['cuenta'];
+            
+            $sql = "Select * from sr_exonera_cuenta where cliente = '$cliente' and cartera = '$cartera' and cuenta = '$cuenta' and  in_status = 'P' ";
+            $conex = new oracle($_SESSION['USER'], $_SESSION['pass']);
+            $st = $conex->consulta($sql);
+            
+            while ($fila = $conex->fetch_array($st)){
+                $filas[]=$fila;
+            }
+            
+            foreach ($filas as $value) {
+                               
+                   $fecha = date("d/m/Y");
+           
+           
+            $monto = str_replace(',','.',$value['MO_EXONERA']);
+            $porcentaje = round((($value['MO_EXONERA'])/($value['MO_SALDO_INICIAL']))*100,2);
+            $tarjeta = $value['CUENTA'];
+            $saldoActual = str_replace(',','.',$value['MO_SALDO_INICIAL']);
+            $montoExonerar = str_replace(',','.',$value['MO_EXONERA']);
+            $montoCancelar = str_replace(',','.',$saldoActual) - str_replace(',','.',$montoExonerar);
+            $fechaPago = date("d/m/Y",  strtotime($_GET['fechaPago']));
+            
+            }
+            
+            
+            $sql = "select nombre, id from tg_persona where persona = (select persona from sr_cuenta where cuenta = '$cuenta' and cliente = '$cliente' and cartera = '$cartera' group by persona)";
+            
+            $st = $conex->consulta($sql);
+            
+            while($fila = $conex->fetch_array($st)){
+                $filas2[] = $fila;
+            }
+            //print_r($filas2);
+            foreach ($filas2 as $value) {
+                $nombre = $value['NOMBRE'];
+                $cedula = $value['ID'];
+            }
+            
+            $sql2 = "SELECT USUARIO FROM SR_USUARIO WHERE USUARIO = (SELECT USUARIO_SUPERIOR FROM SR_USUARIO WHERE USUARIO = '".$_SESSION['USER']."')";
+            
+            $st2 = $conex->consulta($sql2);
+            
+            while ($fila3 = $conex->fetch_array($st2)){
+                
+                $filas3[] = $fila3;
+                
+            }
+            
+            if (isset($filas3)){
+                
+                foreach ($filas3 as $value) {
+                    $correo = $value['USUARIO'];
+                }
+                
+            } else {
+                
+                $correo = null;
+                
+            }
+            
+        }
+            
+            
             ($_SESSION['lang'] === 'es' ) ? $tipoMoneda = 'Bolivares' : $tipoMoneda = 'Dolares';
             $V=new EnLetras();
 
@@ -98,8 +157,8 @@ ob_end_clean();
 <label>Banesco Banco Universal</label><br>
 <label>Presente._</label>
 <br><br>
-<label>Yo,  <b>'.$nombre.', C.I- '.$cedula.',</b> Venezolano, por medio de la presente solicito se estudie la posibilidad de exonerar el <b>'.$V->ValorEnLetras($porcentaje, 'Por Ciento').' ('.$porcentaje.'%)</b> de la deuda que mantengo con esta Institución  Financiera que asciende 
-<b> '.$V->ValorEnLetras($monto,$tipoMoneda).'('.$_SESSION['simb_moneda'].' '.$monto.')</b> a la presente fecha y comprende las obligaciones que he contraído por el uso de las TDC que ofrece el Banco. 
+<label>Yo,  <b>'.$nombre.', C.I- '.$cedula.',</b> Venezolano, por medio de la presente solicito se estudie la posibilidad de exonerar el <b>'.$V->ValorEnLetras(round($porcentaje), 'Por Ciento').' ('.round($porcentaje).'%)</b> de la deuda que mantengo con esta Institución  Financiera que asciende 
+<b> '.$V->ValorEnLetras(str_replace(',','.',$saldoActual),$tipoMoneda).'('.$_SESSION['simb_moneda'].' '.str_replace(',','.',$saldoActual).')</b> a la presente fecha y comprende las obligaciones que he contraído por el uso de las TDC que ofrece el Banco. 
 <br><br>
 Así mismo convengo que la falta de pago, a su vencimiento, de cualquiera de las cuotas indicadas a continuación, dará derecho al Banco a declarar resuelto el presente convenio y considerar la obligación de  plazo vencido. Igualmente de ser devuelto un cheque, me comprometo a reponer el mismo antes de la facturación, consciente de que de no hacerlo perderé la exoneración
 A continuación discriminaré los conceptos que conforman la deuda y el plan de pago que propongo: 
@@ -124,7 +183,7 @@ A continuación discriminaré los conceptos que conforman la deuda y el plan de 
         <td>Monto</td>
         <td>Monto</td>
         <td>Monto</td>
-        <td>Monto</td>
+        <td>Fecha</td>
     </tr>
     
    <tr>
@@ -153,6 +212,23 @@ Teléfono: ______________________________________
 
 
 ';
+             
+             
+             
+                   if ($correo != null){       
+$mensaje = "Se Ha generado una Exoneracion a la cuenta: $cuenta del Deudor: $nombre. de C.I. $cedula por el asesor: ".$_SESSION['nombre_user']." (".$_SESSION['USER'].")";
+
+    $sql = "insert into sr_notificaciones (contenido, id_gestor, status, fecha, id_gestor_destino) values"
+            . "('$mensaje','".$_SESSION['USER']."','0',SYSDATE, '$correo')";
+    
+    //echo $sql;
+    $st = $conex->consulta($sql);
+    
+    
+
+
+             
+      }
 
              
              $pdf->writeHTML($html, true, false, true, false, 'J');
@@ -160,6 +236,11 @@ Teléfono: ______________________________________
              
 
              
-             $pdf->Output('example_006.pdf', 'I');
+             $pdf->Output('exoneracion'.date('d/m/Y').'.pdf', 'I');
+             
+             
+             
+             
+
 
 ?>

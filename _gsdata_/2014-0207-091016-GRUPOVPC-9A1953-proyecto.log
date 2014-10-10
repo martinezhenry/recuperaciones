@@ -1,0 +1,22 @@
+2014-02-07 09:10:16: -- proyecto: ANÁLISIS comenzado por On File Change 1st Full Analyze en ordenador 'GRUPOVPC-9A1953' (GoodSync v 9.7.5.5)
+2014-02-07 09:10:16: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-07 09:10:16: I: Archivos: 1.376 (excluidos 4). Carpetas: 65 (excluidas 1). FTP: FileZilla Server version 0.9.41 betawritten by Tim Kosse (Tim.Kosse@gmx.de)Please visit http://sourceforge.net/projects/filezill ...
+2014-02-07 09:10:16: D: Archivos: 1.375 (excluidos 4). Carpetas: 65 (excluidas 1). C: NTFS, Libre: 450 GB, Total: 465 GB
+2014-02-07 09:10:17: /vista/css/sky-mega-menu.css: Aviso: Un archivo anterior sustituirá a uno más Nuevo
+2014-02-07 09:10:17: /vista/llamadas.php: Aviso: Un archivo anterior sustituirá a uno más Nuevo
+2014-02-07 09:10:17: /vista/menu.php: Aviso: Un archivo anterior sustituirá a uno más Nuevo
+2014-02-07 09:10:17: Cambios: 6, Conflictos: 0, TiempoCopia: 0, EstadoCopia: 0/0, Errores: 0
+2014-02-07 09:10:17: Right to Left: Copy File: 5 Delete File: 1 
+2014-02-07 09:10:17: -- Análisis Completado. Tiempo 00:00:01, Velocidad: 1.446 archivo/s
+2014-02-07 09:10:17: == proyecto: SINC comenzada por On File Change 1st Full Analyze en 'GRUPOVPC-9A1953'
+2014-02-07 09:10:17: ftp://192.20.15.157 <=PropDels= C:\xampp\htdocs\Proyecto_recuperaciones (C:/xampp/htdocs/Proyecto_recuperaciones), UberUnlocked, OnFileChangeDelay=3
+2014-02-07 09:10:17: Borrar Archivo 'ftp://192.20.15.157/desktop.ini'
+2014-02-07 09:10:17: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/controlador/c_sms.php' -> 'ftp://192.20.15.157/controlador/c_sms.php'
+2014-02-07 09:10:18: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/css/sky-mega-menu.css' -> 'ftp://192.20.15.157/vista/css/sky-mega-menu.css'
+2014-02-07 09:10:19: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/llamadas.php' -> 'ftp://192.20.15.157/vista/llamadas.php'
+2014-02-07 09:10:21: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/menu.php' -> 'ftp://192.20.15.157/vista/menu.php'
+2014-02-07 09:10:21: Copiar Sobre 'C:/xampp/htdocs/Proyecto_recuperaciones/vista/sms.php' -> 'ftp://192.20.15.157/vista/sms.php'
+2014-02-07 09:10:21: Guardar archivo de estado ftp://192.20.15.157/_gsdata_/_file_state_v4._gs
+2014-02-07 09:10:23: Elementos Sincronizados OK: 6, Errores: 0
+2014-02-07 09:10:23: == Sinc. Completa. Tiempo: 00:00:06, Velocidad: 21,6 KB/s
+2014-02-07 09:10:23: 

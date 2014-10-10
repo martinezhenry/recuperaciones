@@ -122,4 +122,13 @@ $V_abonos = '<div style="height: 220px; width: 100%; overflow: auto;" id = "abon
 				</tfoot>
 			</table>
 
-                                </div>';
+                                </div>
+                                
+
+
+  <input name="archivo" id="archivo" type="file" size="35" hidden/>
+  <input class="botonEditar" onclick="cargarSoporte();" name="enviar" type="button" value="Upload File" hidden/>
+ 
+
+
+';

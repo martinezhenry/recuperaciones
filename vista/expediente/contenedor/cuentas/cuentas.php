@@ -5,7 +5,7 @@
  * and open the template in the editor.
  */
 $V_cuentas = ' 
-<form onsubmit="return false;" class="sky-form">
+<form onsubmit="return false;">
                          <hr align="left" noshade="noshade" size="2" width="100%" />
                         <div style="width:100%; overflow: auto;">
                       <fieldset style= "padding: 10px 30px 5px;">
@@ -13,7 +13,7 @@ $V_cuentas = '
                         <section>	
                                        
                         
-                            <div style="width: 100%; height: 160px; overflow: auto; outline: none;" id="cuentas">
+                            <div style="width: 100%; height: 200px; overflow: auto; outline: none;" id="cuentas">
                                 
                                 
             <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuentas-Tabla">
@@ -104,10 +104,10 @@ $V_cuentas = '
 <div style="float: left;">
 <img style="cursor: pointer; margin-bottom: -4;" src="img/iconoFlecha-Izquierda.PNG" WIDTH=20 HEIGHT=20 onclick="javascript: if (document.getElementById(\'inicioArr\').value > \'1\'){ document.getElementById(\'inicioArr\').value = parseInt(document.getElementById(\'inicioArr\').value)-1; document.getElementById(\'envio\').click(); }">
 <button hidden type="button" id="envio" onclick="ArrCuentas(document.getElementById(\'arr_\'+document.getElementById(\'inicioArr\').value).value, \''.$filtro.'\');">Enviar</button>
-<input autofocus onchange="javascript: if (parseInt(this.value) > parseInt(finArr.value)){ alert(\'Numero Maximo permitido \'+finArr.value); this.value = finArr.value; } else document.getElementById(\'envio\').click();" id="inicioArr" type="number" min="1" max="'; 
+<input class="editar" autofocus onchange="javascript: if (parseInt(this.value) > parseInt(finArr.value)){ alert(\'Numero Maximo permitido \'+finArr.value); this.value = finArr.value; } else document.getElementById(\'envio\').click();" id="inicioArr" type="number" min="1" max="'; 
 (count($arrCuentas) == 0) ? $V_cuentas .= count($arrCuentas)+1 : $V_cuentas .= count($arrCuentas);
 $V_cuentas .= '" value="1"/> {c_of} 
-<input readonly="readonly" id="finArr" type="number" value="';
+<input class="editar" readonly="readonly" id="finArr" type="number" value="';
 
 (count($arrCuentas) == 0) ? $V_cuentas .= count($arrCuentas)+1 : $V_cuentas .= count($arrCuentas);
 
@@ -124,11 +124,11 @@ $V_cuentas .='" min="1" max="115"/>
                             <div class="row" align="right" id="estadisticas">
                             
                             <label>{c_montV}:</label>
-                            <input style=\'text-align:right;\' disabled="" type="text" id="montoVencido" name="montoVencido" value="0">
+                            <input class="editar" style=\'text-align:right;\' disabled="" type="text" id="montoVencido" name="montoVencido" value="0">
                             <label>{c_int}:</label>
-                            <input style=\'text-align:right;\' disabled="" type="text" id = "intereses" name="intereses" value="0">
+                            <input class="editar" style=\'text-align:right;\' disabled="" type="text" id = "intereses" name="intereses" value="0">
                             <label>{c_montT}:</label>
-                            <input style=\'text-align:right;\' disabled="" type="text" id="montoTotal" name="montoTotal" value="0">
+                            <input class="editar" style=\'text-align:right;\' disabled="" type="text" id="montoTotal" name="montoTotal" value="0">
                             
                             
                         </div>

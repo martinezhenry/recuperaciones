@@ -51,7 +51,36 @@ function cargarExoneraciones($cuenta)
     }
 }
 
+function inactivarExoneracion($cuenta, $cartera, $cliente){
+    
+    global $conex;
+            $sql = "Select cuenta from sr_cuenta where cliente = '$cliente' and cartera = '$cartera' and cuenta = '$cuenta' and area_devolucion is not null";
+        
+        $st = $conex->consulta($sql);
+        
+        while ($fila = $conex->fetch_array($st)){
+            
+            $filas[] = $fila;
+            
+        }
+        
+        if (isset($filas)){
+            
+            return "No se puede cargar un abono en una cuenta que esta en area de devolucion";
+            
+        }
+    
+    
+        $sql = "UPDATE SR_EXONERA_CUENTA SET IN_STATUS = 'I' WHERE CUENTA = '$cuenta' AND IN_STATUS = 'P' AND CLIENTE = '$cliente' AND CARTERA = '$cartera'"; 
 
+
+        $st = $conex->consulta($sql);
+    
+    
+    return 1;
+    
+    
+}
 
 
 
@@ -261,13 +290,32 @@ function cargarExoneraciones($cuenta)
         $cuenta = $_GET['cuentaActual'];
         $cartera = $_GET['cartera'];
         $cliente = $_GET['cliente'];
-        $usuario = "session";
+        $usuario = $_SESSION['USER'];
         $saldoInicial = $_GET['saldoActual'];
         $saldoExonerar = $_GET['saldoExonerar'];
         $saldoFinal = $_GET['saldoCancelar'];
         $fecha = date("d/m/Y");
         
         $tipoPago = $_GET['tipoPago'];
+        
+        
+                $sql = "Select cuenta from sr_cuenta where cliente = '$cliente' and cartera = '$cartera' and cuenta = '$cuenta' and area_devolucion is not null";
+        
+        $st = $conex->consulta($sql);
+        
+        while ($fila = $conex->fetch_array($st)){
+            
+            $filas[] = $fila;
+            
+        }
+        
+        if (isset($filas)){
+            
+            echo "No se puede cargar un abono en una cuenta que esta en area de devolucion";
+            exit();
+        }
+        
+        
         
         if ($tipoPago == "0")
         {
@@ -281,13 +329,17 @@ function cargarExoneraciones($cuenta)
     }
         // Se eliminan los puntos (.)
         $saldoInicial = str_replace(".", "", $saldoInicial);
+        $saldoInicial = trim(str_replace($_SESSION['simb_moneda'], "", $saldoInicial));
         $saldoExonerar = str_replace(".", "", $saldoExonerar);
         $saldoFinal = str_replace(".", "", $saldoFinal);
+                
+
+        
         
         $sql = "insert into sr_exonera_cuenta
                (cliente, cartera, cuenta, co_exonera, mo_saldo_inicial, mo_exonera, mo_saldo_final, fe_exonera, in_status, tx_usuario, co_motivo_exonera, tx_usuario_mod, fe_exonera_mod, mo_castigo, cuotas, fecha_cuotas)
                values ('$cliente','$cartera','$cuenta','1','$saldoInicial','$saldoExonerar','$saldoFinal','$fecha','P','$usuario','1','','','','$cuotas', '$fechaCuotas')";
-       
+      // echo $sql;
         $st = $conex->consulta($sql);
         
         echo "Se Genero";
@@ -304,7 +356,25 @@ function cargarExoneraciones($cuenta)
         
         echo $e['not_tab15'];
         
+    } else if (isset($_POST['inactivarExoneracion'])){
+        
+        
+        $cuenta = $_POST['cuenta'];
+        $cliente = $_POST['cliente'];
+        $cartera =  $_POST['cartera'];
+        
+       // echo "$cartera , $cliente , $cuenta";
+        
+        
+        
+        
+        $resp = inactivarExoneracion($cuenta, $cartera, $cliente);
+       echo $resp;
+        
+        
     }
+    
+    
 
 
 /*

@@ -4,14 +4,191 @@
 //Toma el texto de parametro y lo coloca en el objeto de parametro
 //
 
-function enviarSMS() {
+
+function cargarEmail(persona){
+    
+   // alert(persona);
+    
+    var parametros = {
+      cargarEmail : 1,
+      persona : persona
+    };
+    var html = "";
+    $.ajax({
+        
+        type : 'post',
+        url : '../controlador/c_email.php',
+        data : parametros,
+        success : function(resp){
+              
+              
+              if (resp == "0"){
+                  html= "<tr class='odd'><td class='dataTables_empty' colspan='3'>No Existen Emails</td></tr>";
+                
+              } else {
+            var emails = JSON.parse(resp);
+            
+       
+            
+            for (var i=0; i < emails.length; i++){
+                
+                
+                if (emails[i].STATUS_EMAIL == 'A'){
+                    var otro_option = "<option value='I'>Inactivo</option>";
+                } else {
+                    var otro_option = "<option value='A'>Activo</option>";
+                }
+                
+                html += "<tr id='"+emails[i].ID_EMAIL+"'>";
+                html += "<td class='center'>"+emails[i].DIRECCION+"</td>";
+                html += "<td class='center'>"+emails[i].PARENTESCO+"</td>";
+                html += "<td class='center'><select class='selectEditar' disabled><option value='"+emails[i].STATUS_EMAIL+"'>"+emails[i].STATUS_DESC+"</option>"+otro_option+"</select></td>";
+                html += "</tr>";
+            }
+            
+            
+              }
+        }
+        
+    }).complete(function(){
+     
+    $('#tabla-emails tbody').html(html);
+   // alert(html);
+        
+    });
+    
+    
+    
+}
+
+
+
+function guardarEmails(persona){
+    //alert(persona);
+    var respuesta = confirm ('Esta Seguro de Guardar Los Cambios?');
+    var ids = new Array();
+    var nuevos = new Array();
+    $('#tabla-emails tbody tr').each(function(idx){
+        
+        if ($(this).attr('id') == 'nueva'){
+            
+            if ($(this).find('input').val() == ""){
+                alertify.error("La direccion no puede ser vacia");
+                $(this).find('input').focus();
+                nuevos = null;
+                return;
+            }
+            
+           if (ValidaEmail($(this).find('input').val()) == false){
+               
+               alertify.error("Correo No Valido");
+                $(this).find('input').focus();
+                nuevos = null;
+                return;
+               
+           }
+            
+            nuevos.push(new Array ($(this).find('input').val(), $(this).find('select:enabled').val()));
+           
+        } else {
+            if($(this).find('select:enabled').length){
+            ids.push(new Array($(this).attr('id'), $(this).find('select:enabled').val()));
+        }
+        }
+        
+    });
+    
+    if (nuevos == null){
+        return false; 
+    }
+    
+    if (respuesta){
+       
+        var parametros = {
+            guardarEmails : 1,
+            ids : ids,
+            nuevos : nuevos,
+            persona : persona
+            
+            
+        };
+        $.ajax({
+            
+            type : 'post',
+            url : '../controlador/c_email.php',
+            data : parametros,
+            success : function (resp){
+                alert(resp);
+                if (resp == "1"){
+                    alertify.success("Cambios Guardados");
+                    $('#sky-tab1-4').click();
+                }
+                else
+                    alertify.error("Error al realizar los cambios");
+                
+            }
+            
+            
+        });
+        
+        
+        
+    } else {
+        
+        return;
+    }
+    
+}
+
+
+
+function editarEmail(){
+    $('#tabla-emails select').removeAttr('disabled');
+    $('#buttonGuardarEmail').removeAttr('disabled');
+    
+}
+
+
+function agregarEmail(){
+    
+    
+    $('#tabla-emails tbody').prepend("<tr id='nueva'><td class='center'><input class='editar' style='width:100%;' type='text'/></td><td class='center'><select class='selectEditar' id='parentescos_email'></select></td><td class='center'><select class='selectEditar'><option value='A'>Activo</option></select></td></tr>");
+    
+    $.ajax({
+        
+        type : 'post',
+        url : '../controlador/c_email.php',
+        data : {cargarParentesco:1},
+        success : function(resp){
+            
+            if (resp == "0"){
+                return;
+            }
+            
+            var arr = JSON.parse(resp);
+            for (var i=0;i<arr.length;i++){
+            $('#parentescos_email').append("<option value='"+arr[i].ID_PAR+"'>"+arr[i].PARENTESCO+"</option>");
+        }
+            
+            
+        }
+        
+    });
+    
+    $('#buttonGuardarEmail').removeAttr('disabled');
+    
+}
+
+
+
+function enviarEmail() {
  
  alert("Email Enviado.");
   
 }
 
 
-
+/*
 function activarDesactivarChecks(checkBoxes, accionador)
 {   
 
@@ -35,7 +212,7 @@ function activarDesactivarChecks(checkBoxes, accionador)
 
        
     
-}
+}*/
 /*
 function contenido(contenido)
 {
@@ -77,7 +254,7 @@ function filtroBuscar(valor)
     
     
 
-
+/*
 function Validaciones() 
 {
     
@@ -163,7 +340,7 @@ this.VacioFormulario = function VacioFormulario(formulario)
         
  
   };     
-  
+  */
   
   function buscarCorreos(idPersona)
 {
@@ -187,7 +364,7 @@ this.VacioFormulario = function VacioFormulario(formulario)
         ajax.send();
 }
 
-
+/*
 function enviarSMS(formulario)
 {
     var Escribe = document.getElementById('respuesta');
@@ -220,14 +397,14 @@ function enviarSMS(formulario)
        
 }
 
-
-
+*/
+/*
 function leerSMS(formulario)
 {
     
 }
 
-            
+      */      
             
             /*
             function tomarTelefonos()

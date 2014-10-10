@@ -40,7 +40,7 @@ ob_end_clean();
            
           //  $gestiones = array();
             
-            $idPersona = buscarIdPersona($cuenta);
+            $idPersona = buscarIdPersona($cuenta, 1);
         
             $conex = new oracle($_SESSION['USER'], $_SESSION['pass']);
             
@@ -112,11 +112,11 @@ GERENCIA DE RECUPERACIONES </b></label>
 <br><br>
 
 <table border="1">
-    <tr><td>  <b>Asesor:</b> '.$asesor.'<br>
+    <tr><td> <!-- <b>Asesor:</b> '.$asesor.'<br>-->
     <b>Cliente:</b> '.$cuentas[0]['NOMBRE'].'<br>
-    <b>Deudor:</b>  '.$deudor['NOMBRE'].' <b>C.I:</b> '.$deudor['ID'].' <br>
+    <b>Deudor:</b>  '.htmlentities($deudor['NOMBRE']).' <b>C.I:</b> '.$deudor['ID'].' <br>
     <b>Cuenta: </b>'.$cuenta.'<br>
-    <b>Dirección:</b> '.$direcion['DIRECCION'].'</td></tr>
+    <b>Dirección:</b> '.htmlentities($direcion['DIRECCION']).'</td></tr>
     
 </table>
 
@@ -150,7 +150,7 @@ GERENCIA DE RECUPERACIONES </b></label>
                                 <td style="border-bottom: 1px ridge black;" width="110">'.$value['FECHA_INGRESO'].'</td>
                                 <td style="border-bottom: 1px ridge black;" width="50">'.$value['TELEF_COD_AREA'].'</td>
                                 <td style="border-bottom: 1px ridge black;" width="80">'.$value['TELEF_GESTION'].'</td>
-                                <td style="border-bottom: 1px ridge black;" width="610"><label>'.$value['TIPO_GESTION']." || ".$value['OBSERVACION'].'</label></td>
+                                <td style="border-bottom: 1px ridge black;" width="610"><label>'.$value['TIPO_GESTION']." || ".htmlentities($value['OBSERVACION']).'</label></td>
                                 <td style="border-bottom: 1px ridge black;" width="100">'.$value['FECHA_PROMESA'].'</td>
                             </tr>
 

@@ -56,7 +56,7 @@ Class C_llamada extends Oracle {
           
       } else {
         //SQL para la cunsulta
-        $sql = "SELECT J.PERSONA, J.COD_AREA,J.TELEFONO, J.STATUS_TELEFONO FROM tg_persona_tel_adi j WHERE J.PERSONA = '$cedula'"; /*Buscar el id persona antes*/
+        $sql = "SELECT J.PERSONA, J.COD_AREA,J.TELEFONO, J.STATUS_TELEFONO FROM tg_persona_tel_adi j WHERE J.PERSONA = '$cedula' order by status_telefono asc"; /*Buscar el id persona antes*/
 
         //Realizamos la consulta en la base de datos Oracle 
         //Que nos devuelve una matriz con los resultados    

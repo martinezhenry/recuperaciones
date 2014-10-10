@@ -34,6 +34,12 @@ $_SESSION['raiz'] = "c:/Recuperaciones";
   //Pantalla Directorios
   include "directorios.php";
   
+    //Pantalla Busqueda Avanzada
+  include "busquedaAvanzada/busquedaAvanzada.php";
+  
+    //Pantalla Novedades
+  include "novedades/novedades.php";
+  
   //Pantalla Localozacion
   require_once $_SESSION['ROOT_PATH'].'/vista/localizacion/localizacion.php';
   
@@ -312,6 +318,23 @@ color: #ee9393;
                                
                                                            
                                echo $localizacion;
+                                
+                                
+                            } else if ($_GET['pantalla'] == md5("busqueda")){
+                                
+                             //    foreach ($loc as $key => $value) {
+                               // $busqueda = str_replace('{'.$key.'}', $value, $busqueda);
+                              
+                              // }
+                               
+                                                           
+                               echo $busqueda;
+                                
+                                
+                            } else if ($_GET['pantalla'] == md5("novedades")){
+                                
+                                        
+                               echo $novedades;
                                 
                                 
                             }

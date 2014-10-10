@@ -30,8 +30,8 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
     var bntModificar = document.getElementById('modificar');
     var bntCancelar = document.getElementById('cancelar');
     var observaciones = document.getElementById('observaciones');
-    
-   
+   // alert('ges');
+  // tabActivo.value = "gestiones";
     var check = document.getElementsByName('check');
     //Se activan y desactivan los botones segun funcion
     bntCancelar.style.display = 'none';
@@ -44,7 +44,7 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
    
     //$("input[name='sky-tabs-2']:checked").click();
     //Se le asignan los valores de cuenta actual a los elementos pertenecientes
-    tabActivo.value = "gestiones";
+    
     cuentaActual.value= cuenta;
     clienteActual.value = cliente;
     carteraActual.value = cartera;
@@ -75,7 +75,9 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
         {
          //   alert('gestiones');
             gestiones.innerHTML = ajax.responseText;
+          //  $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
             llamaTodo('gestiones-Tabla');
+            $('#AgregarActivo').val('0');
           
 
         }
@@ -123,7 +125,11 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                 var bntGuardar = document.getElementById('guardar');
                 var bntAgregar = document.getElementById('agregar');
                 var bntCancelar = document.getElementById('cancelar');
+             //   alert(tableID);
+               // $('#gestiones-1').attr('onclick', '$("#guardar").removeAttr("disabled")');
                 
+                //$('#cuentas-Tabla tbody tr td').off('click','**');
+                $('#AgregarActivo').val('1');
                
                 // Se activan o desactivan botones de acuerdo a funcion
                  bntAgregar.disabled = true;
@@ -134,12 +140,14 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                // Se verifica que identificador se envio
                if (tableID == "gestiones-Tabla")
                {
+                //   alert('ges');
                    //se vrea variable de nueva fila
                var row = table.insertRow(1);
                // Se activa el elemento de observaciones
                 activarArea();
                //Se le asigan una clase a la fila
                row.className = "gradeX";
+               row.id= 'nueva';
                // Se crean la celda
                var cell0 = row.insertCell(0);
                //Sele asigna una clase a la celda
@@ -227,6 +235,7 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                    element2.className = "selectEditar";
                    element3.className = "selectEditar";
                    element2.setAttribute("tabindex", "1");
+                  // element2.focus();
                    element3.setAttribute("tabindex", "6");
                     //Se crea arreglo del la cadena
                    arrGeneral = cadena.split("*");
@@ -298,7 +307,7 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                telefono.size = 8;
                telefono.className = "editar";
                telefono.setAttribute("onkeydown", "muestraInformacion(event, 6);");
-               telefono.setAttribute("maxlength", "7");
+               telefono.setAttribute("maxlength", "11");
                telefono.setAttribute("tabindex", "3");
                cell5.className = "pb";
                cell5.appendChild(telefono);
@@ -417,6 +426,10 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                        $('#guardar').attr('onclick', 'guardarGestion()');
                        $('#telefono').numeric(false);
                        $('#area').numeric(false);
+                    //   alert($('#'+tableID+' .row_selected').text());
+                       
+                       $('#nueva').insertBefore(('#'+tableID+' .row_selected'));
+                       $('#tipoGestion').focus();
      
                 }
                 
@@ -634,11 +647,27 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                     cell10.className = "pb";
                     cell10.appendChild(statusAbono);
                     
+                          var cell11 = row.insertCell(11);
+                    var file = document.createElement("input");
+
+                    file.type = "file";
+                    file.name = "archivo";
+                    file.id = "archivo";
+                    //file.textContent = "Adjuntar";
+                   // file.setAttribute('href','#');
+                    file.setAttribute('style',"width: 86;");
+                    //file.disabled = true;
+                    file.size = 6;
+                    file.className = "editar";
+                    cell11.className = "pb";
+                    cell11.appendChild(file);
+                    
               
                $('#guardar').attr('onclick', 'guardarAbonos($(\'#cuentaActual\').val())');
                $('#montoAbono').numeric(',');
                $('#cuotaAbono').numeric(false);
                $('#nroDepositoAbono').numeric(false);
+               $('#nueva').insertBefore(('#'+tableID+' .row_selected'));
                 }
             }
             
@@ -726,8 +755,51 @@ function guardarGestion(cuenta)
        usuarioGestor : usuarioGestor,
        parentesco_texto : parentesco_texto
    };
-       
    
+   
+   $.ajax({
+       
+       url : '../controlador/c_deudor.php',
+       type : 'get',
+       data : { validarTelefono : 1, area : areaTelefono, telefono: telefono, persona : $('#personaActual').val() }
+      
+       
+   }).done(function (resp){
+       
+       
+               //   alert(resp);
+           
+           if (resp == 1){
+               
+              
+               
+           } else {
+               
+               if (confirm('Deseas  guardar este número como  numero de contacto del deudor? El mismo se guardara en la ficha de teléfonos del deudor')){
+                   
+                   $.ajax({
+                       
+                        url : '../controlador/c_deudor.php',
+                        type : 'get',
+                        data : {guardarTelefono : 1, area : areaTelefono, telefono: telefono, persona : $('#personaActual').val()}
+                       
+                       
+                   }).done(function(resp2){
+                       
+                     //  alert(resp);
+                       if (resp2 != 1){
+                           
+                            alertify.error("Error al registrar telefono del contacto."); 
+                           return 0;
+                       }
+                       
+                       
+                   });
+                   
+               }
+               
+           }
+      
    $.ajax({
          
          type : 'get',
@@ -743,8 +815,11 @@ function guardarGestion(cuenta)
                if (resp == 1) {
                    
                    alertify.success("Gestion Guardada.");
-                   validarCopia();
+                  // validarCopia();
+                  cargarCuentas($('#personaActual').val());
                    cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, saldoActualCuenta);
+                  // $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
+                   $('#gestiones-1').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
                } else {
                    
                    alertify.error(resp);
@@ -760,7 +835,19 @@ function guardarGestion(cuenta)
          }
             
             
+    }).done(function(){
+        
+        
+       validarCopia();
+        
+        
     }); 
+   
+   
+   });
+       
+   
+   
     /*
     var ajax = nuevoAjax();
     
@@ -850,7 +937,7 @@ function eliminarGestion()
                 {
                     // Respuesta del servidor
                  var contenedor = ajax.responseText;
-                 
+               //  alert(contenedor);
                  // se verifica respuesta
                  if (contenedor == 1)
                  {
@@ -860,6 +947,11 @@ function eliminarGestion()
                    cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, saldoActualCuenta);
                     // Se muestra mensaje al usuario
                     
+                 } else {
+                     
+                        alertify.error('Error no esperado: '+contador);
+                     
+                     
                  }
     
                 }
@@ -1058,7 +1150,10 @@ function guardarModificacion(){
       var fpromesa = $('#txt11').val();
       var mpromesa = $('#txt12').val();
       var observaciones = $('#observaciones').val();
-      
+      var cuenta = $('#cuentaActual').val();
+      var cliente =  $('#clienteActual').val();
+      var cartera = $('#carteraActual').val();
+   //   alert(cuenta);
       var parametros = {
          modificarGestion : 1,
          gestion : fila,
@@ -1073,7 +1168,10 @@ function guardarModificacion(){
          hproximagestion : hproximagestion,
          fpromesa : fpromesa,
          mpromesa : mpromesa,
-         observaciones : observaciones
+         observaciones : observaciones,
+        cuentaModif : cuenta,
+        clienteModif : cliente,
+        carteraModif : cartera
          
          
      };
@@ -1086,19 +1184,25 @@ function guardarModificacion(){
           url : '../controlador/c_deudor.php',
           success : function(resp){
               
-            // alert(resp);
+          //   alert(resp);
               
               if (resp == 0){
                   
                   //alert("No esta autorizado para realizar modificaciones");
                   alertify.error('No esta autorizado para realizar modificaciones');
+                  $('#gestiones-1').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
                   $('#gestiones-1').click();
-                  return;
+                 // return;
+              } else if(resp==1)
+              {
+                  alertify.success("Modificacion Realizada");
+                  $('#gestiones-1').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
+                  $('#gestiones-1').click();
+                 // return;
               } else {
                   
-                  alert(resp);
-                  $('#gestiones-1').click();
-                  return;
+                 alertify.error(resp);
+                  
               }
               
               
@@ -1212,13 +1316,45 @@ function muestraInformacion(evento, posicion) {
      
      //alert($('#gestiones-Tabla tbody tr:nth-child(2) td:nth-child('+posicion+')').text());
     // alert((evento.target).id);
-     $('#'+(evento.target).id).val($('#gestiones-Tabla tbody tr:nth-child(2) td:nth-child('+posicion+')').text());
+     //$('#'+(evento.target).id).val($('#gestiones-Tabla tbody tr:nth-child(2) td:nth-child('+posicion+')').text());
      
+     $('#'+(evento.target).id).val($('#gestiones-Tabla .row_selected td:nth-child('+posicion+')').text());
+     
+     //alert($('#gestiones-Tabla .row_selected td:nth-child('+posicion+')').text());
  
 }
+
+if (tecla === 78 && evento.ctrlKey){
+    
+    alert('hacer');
+    
+}
+
  //  alert(mensaje);
 }
 
+
+function mostrarFile() {
+    
+   $('#archivo').click();
+  
+    $('#archivo').removeAttr('hidden');
+    
+}
+
+
+ 
+        /*
+       $(document).keypress(function(event){
+          
+           if ($('#dataTables_scroll').focusin())
+               alert('focus');
+           else
+               alert('no focus');
+           
+       });
+        */
+    
 
 
 /*

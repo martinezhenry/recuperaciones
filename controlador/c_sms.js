@@ -150,15 +150,15 @@ function enviarSMS(formulario)
     // Se obtiene contenedor
     var Escribe = document.getElementById('respuesta');
         
+   //alert('ff');
    
-
     var ajax = nuevoAjax();
     
     ajax.onreadystatechange = function() {
  
              //Cuando se completa la petición, mostrará los resultados 
             if (ajax.readyState == 4){
- 
+               //  alert(ajax.responseText);
                 //El método responseText() contiene el texto de nuestro 'consultar.php'. Por ejemplo, cualquier texto que mostremos por un 'echo'
                Escribe.innerHTML = ajax.responseText;
             }
@@ -389,12 +389,12 @@ function buscaVariables(idPlantilla, idPersona){
                           //$('.popup-overlay').fadeOut('slow');
                           $('#smsContenido').val(cadena);
                           if (idPlantilla == 2){
-                              
+                            //  alert('s');
                               var str = $('#smsContenido').val();
                               var ms = Date.parse($('#fechaPromesa').val());
                               var fecha = new Date(ms);
                               //alert(fecha.getDate()+1+"/"+(fecha.getMonth()+1));
-                              $('#smsContenido').val(str.replace("MONTO_PROMESA",document.getElementById('montoPromesa').value));
+                              $('#smsContenido').val(str.replace("MONTO_PROMESA",$('#montoPromesa').val()));
                               str = $('#smsContenido').val();
                               $('#smsContenido').val(str.replace("F_PROMESA",(fecha.getDate()+1)+"/"+(fecha.getMonth()+1)));
                           }

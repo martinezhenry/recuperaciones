@@ -62,7 +62,7 @@ Class C_direccion extends Oracle {
           return false;
       } else {
         //SQL para la cunsulta
-        $sql = "SELECT D.PERSONA, D.DIRECCION, D.STATUS_DIRECCION, D.ID_DIRECCION FROM TG_PERSONA_DIR_ADI D WHERE D.PERSONA = '$cedula'"; /*Buscar el id persona antes*/
+        $sql = "SELECT D.PERSONA, D.DIRECCION, D.STATUS_DIRECCION, D.ID_DIRECCION FROM TG_PERSONA_DIR_ADI D WHERE D.PERSONA = '$cedula' order by status_direccion"; /*Buscar el id persona antes*/
 
         //Realizamos la consulta en la base de datos Oracle 
         //Que nos devuelve una matriz con los resultados    

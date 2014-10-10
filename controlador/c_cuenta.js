@@ -240,7 +240,7 @@ function crearPDF()
 
 
 function validarCopia(){
-   
+ 
   // alert(document.getElementsByName('btn_Copiar').length);
    var id = '';
    var btns = document.getElementsByName('btn_Copiar');
@@ -276,7 +276,7 @@ function validarCopia(){
           //  alert(resp);
           
            // return resp;
-            
+          //    alert(resp);
            // alert(resp+" aver");
            var r = resp.split(',');    
          for (var i=0; i < r.length; i++){
@@ -367,6 +367,7 @@ function copiarGestion(id, idclick){
                    alertify.success("Gestion Guardada.");
                   // cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, saldoActualCuenta); 
                    $('#' + idclick).click();
+                   $('#'+id).removeAtrr('disabled');
                } else {
                    
                    alertify.error(resp);

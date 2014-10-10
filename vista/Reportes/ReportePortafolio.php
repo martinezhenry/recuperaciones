@@ -34,7 +34,9 @@ $objPHPExcel->setActiveSheetIndex(0)
             ->SetCellValue('I2', 'Nº DE ASIGNACION')
             ->SetCellValue('J2', 'ASESOR')
             ->SetCellValue('K2', 'FECHA ASIGNACION')
-            ->SetCellValue('L2', 'TIPO DE GESTION');
+            ->SetCellValue('L2', 'TIPO DE GESTION')
+            ->SetCellValue('M2', 'FECHA DE PROMESA')
+            ->SetCellValue('N2', 'FECHA DE PROXIMA ACCION');
 
     $fila = 3;
    
@@ -51,7 +53,9 @@ $objPHPExcel->setActiveSheetIndex(0)
             ->SetCellValue('I'.$fila, '')
             ->SetCellValue('J'.$fila, $value['ASESOR'])
             ->SetCellValue('K'.$fila, $value['FECHA_ASIGNACION'])
-            ->SetCellValue('L'.$fila, $value['TIPO_GESTION']);
+            ->SetCellValue('L'.$fila, $value['TIPO_GESTION'])
+            ->SetCellValue('M'.$fila, $value['FECHA_PROMESA'])
+            ->SetCellValue('N'.$fila, $value['FECHA_PROXIMA_GESTION']);
         $fila++;
                 
 
@@ -70,6 +74,8 @@ $objPHPExcel->setActiveSheetIndex(0)
             $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
             $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
             $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);
 $objPHPExcel -> getActiveSheet ()-> getStyle ( 
     'B2:L2' 
     )-> getBorders ()-> getAllBorders ()-> setBorderStyle ( PHPExcel_Style_Border :: BORDER_MEDIUM );

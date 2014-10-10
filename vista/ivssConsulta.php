@@ -28,7 +28,17 @@ $opts = array('http' =>
 $context  = stream_context_create($opts);
  
 $result = file_get_contents('http://www.ivss.gob.ve:28083/CuentaIndividualIntranet/CtaIndividual_PortalCTRL', false, $context);
- 
+
+       // $result = str_replace('Bderecho', 'otrafun', $result);
+
+
+
+
+
+   //     $result = str_replace('document.onclick=reEnable', '', $result);
+     //   $result = str_replace('document.onmousedown=disableselect', '', $result);
+        $result = str_replace('document.onselectstart=new Function ("return false")', '', $result);
+  $result = str_replace('<img src= "servicios1/cta_individual/superior2.png"  width="706" height="80" alt="cuentaindividual" >', '', $result);
 echo $result;
 
     } 

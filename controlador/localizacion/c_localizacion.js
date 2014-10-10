@@ -113,6 +113,7 @@ $(document).ready(function(){
         pintarTabla('#table_Localizacion');
         $('#loc_codarea').numeric(false);
         $('#loc_telefono').numeric(false);
+         $(this).attr('title','Localización');
         
     };
     

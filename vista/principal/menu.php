@@ -3,7 +3,7 @@
   //include("../modelo/conexion.php");
   include("sms.php");
   include($_SESSION['ROOT_PATH']."/vista/expediente/contenedor/llamadas.php");
-  include("email.php");
+  include($_SESSION['ROOT_PATH']."/vista/expediente/contenedor/emails/email.php");
 
 	$id = 'menu1';
 if(isset($_GET['pantalla'])){
@@ -54,11 +54,11 @@ else
 				</li>';
                                 
 $menu .=	'<li aria-haspopup="true" style="'.$vista_boton.'">
-					<a ';
+					<a id="menu-agenda"';
 if($id == 'menu1')
-	$menu .= 'style= "background: #2da5da;color: #fff; padding: 0;"  href="#" onclick= "abrirVentana(\'?pantalla='.md5('agenda').'\', \'Agenda\');">&nbsp<img title="Agenda" style="margin-top: 13;" src="img/ico/agenda.ico" width="15px" heigth="15px"/>&nbsp</a>';
+	$menu .= 'style= "background: #2da5da;color: #fff; padding: 0;"  href="#" onclick= "abrirVentana(\'?pantalla='.md5('agenda').'\', \'Agenda\');">&nbsp<img title="Agenda" src="img/ico/agenda.ico" width="15px" heigth="15px"/>&nbsp</a>';
 else
-	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('agenda').'\', \'Agenda\');">&nbsp<img title="Agenda" style="margin-top: 13;" src="img/ico/agenda.ico" width="15px" heigth="15px"/>&nbsp</a>';
+	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('agenda').'\', \'Agenda\');">&nbsp<img title="Agenda" src="img/ico/agenda.ico" width="15px" heigth="15px"/>&nbsp</a>';
 				
 
 $menu .= '
@@ -70,11 +70,11 @@ $menu .= '
 
                                        $menu .= '
 				<li aria-haspopup="true" style="'.$vista_boton.'">
-                                    <a ';
+                                    <a id="menu-expediente" ';
 if($id == 'menu2')
 	$menu .= 'style= "background: #2da5da;color: #fff; padding: 0;"  href="#" onclick= "abrirVentana(\'?pantalla='.md5('expediente').'\', \'Expediente\');"><i class="fa fa-bullhorn"></i>&nbsp;</a>';
 else
-	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('expediente').'\', \'Expediente\');">&nbsp<img title="Expediente" style="margin-top: 13;" src="img/ico/page.ico" width="15px" heigth="15px"/>&nbsp</a>';
+	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('expediente').'\', \'Expediente\');">&nbsp<img title="Expediente" src="img/ico/page.ico" width="15px" heigth="15px"/>&nbsp</a>';
 
                          $menu .= '
 
@@ -89,9 +89,9 @@ else
 				<li aria-haspopup="true" style="'.$vista_boton.'">
                                     <a ';
 if($id == 'menu2')
-	$menu .= 'style= "background: #2da5da;color: #fff; padding: 0;"  href="#" onclick= "abrirVentana(\'?pantalla='.md5('localizacion').'\', \'Localizacion\');"><img title="Localizacion" style="margin-top: 13;" src="img/ico/localizacion.ico" width="15px" heigth="15px"/>&nbsp;</a>';
+	$menu .= 'style= "background: #2da5da;color: #fff; padding: 0;"  href="#" onclick= "abrirVentana(\'?pantalla='.md5('localizacion').'\', \'Localizacion\');"><img title="Localizacion"  src="img/ico/localizacion.ico" width="15px" heigth="15px"/>&nbsp;</a>';
 else
-	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('localizacion').'\', \'Localizacion\');">&nbsp<img title="Localizacion" style="margin-top: 13;" src="img/ico/localizacion.ico" width="15px" heigth="15px"/>&nbsp</a>';
+	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('localizacion').'\', \'Localizacion\');">&nbsp<img title="Localizacion"  src="img/ico/localizacion.ico" width="15px" heigth="15px"/>&nbsp</a>';
 
                          $menu .= '
 
@@ -100,7 +100,7 @@ else
                          
 
     $menu .=     '   <li aria-haspopup="true" style="'.$vista_boton.'">
-            &nbsp<img style="margin-top: 13;" src="img/ico/imprimir.ico" width="15px" heigth="15px"/>&nbsp
+            &nbsp<img  src="img/ico/imprimir.ico" width="15px" heigth="15px"/>&nbsp
                 <div class="grid-container3">
                     <div class="">
                     <a onmouseover="this.style.background=\'#2da5da\';this.style.color=\'white\'" onmouseout="this.style.background=\'initial\';this.style.color=\'#666\'" href="#"><i class="fa fa-edit"></i>Link1</a>
@@ -120,7 +120,7 @@ else
                 </div>
             </li>
          <!--   <li aria-haspopup="true" style="'.$vista_boton.'">
-            &nbsp<img style="margin-top: 13;" src="img/ico/config.ico" width="15px" heigth="15px"/>&nbsp
+            &nbsp<img src="img/ico/config.ico" width="15px" heigth="15px"/>&nbsp
                 <div class="grid-container3">
                     <div class="">
                     <a target="_blank" onmouseover="this.style.background=\'#2da5da\';this.style.color=\'white\'" onmouseout="this.style.background=\'initial\';this.style.color=\'#666\'" href="validaciones.php"><i class="fa fa-edit"></i>{tab5}</a>
@@ -130,16 +130,31 @@ else
                     </div>
                     
                 </div>
-            </li> -->
+            </li> -->';
+            // INICIO MENU LOCALIZACION
 
-                                                 <!-- NOTIFICACIONES -->
+                                       $menu .= '
+				<li aria-haspopup="true" style="'.$vista_boton.'">
+                                    <a ';
+if($id == 'menu5')
+	$menu .= 'style= "background: #2da5da;color: #fff; padding: 0;"  href="#" onclick= "abrirVentana(\'?pantalla='.md5('busqueda').'\');"><img title="Busqueda Avanzada" src="img/ico/busqueda.ico" width="20px" heigth="20px"/>&nbsp;</a>';
+else
+	$menu .= 'href="#" style="padding: 0;" onclick= "abrirVentana(\'?pantalla='.md5('busqueda').'\');">&nbsp<img title="Busqueda Avanzada"  src="img/ico/busqueda.ico" width="20px" heigth="20px"/>&nbsp</a>';
+
+                         $menu .= '
+
+				</li>';
+                         // FIN MENU LOCALIZACION
+                         
+
+                       $menu .='                          <!-- NOTIFICACIONES -->
                                 
                     
  
 				<!-- contacts -->
                                 <!-- contacts form -->
 				<li aria-haspopup="true" class="right">
-					<a onmouseover="'; $menu .= "buscarTelefonos('SESSION', 'HAY');"; $menu .= '" href="#_">
+					<a onmouseover="'; $menu .= "buscarTelefonos('SESSION', 'HAY');"; $menu .= '" onclick="mantenerCapa();" href="#_">
                                         <span id="countSMS" class="notificacion">8
                                         </span>
                                         <i class="fa fa-envelope-o"></i>SMS</a>
@@ -170,10 +185,17 @@ else
                                           
                                         </div>
                                  </li>
+                                 
 
                                 <!-- END NOTIFICACIONES -->
-
-				
+                                
+				<li aria-haspopup="true" class="right">
+					<a href="?pantalla='.md5('novedades').'" target="_blank">
+                                        <span id="noti24" class="notificacion">!
+                                        </span>
+                                        &nbsp*</a>
+                                        
+                                 </li> 
 				<!--/ contacts -->
 			</ul>
 			<!--/ mega menu -->'
@@ -213,18 +235,26 @@ else
 </style>
 <script src="../controlador/c_notificaciones.js"></script>
 <script src="../controlador/c_sms.js"></script>
+<script src="../controlador/novedades/c_novedades.js"></script>
 <script>
-    $(document).ready(function (){ $('#noti').load('notificaciones.php'); setInterval('obtenerNoLeidos(); contadorSMSRecibios()',60000); $("#li-noti").hover(function() {
+    $(document).ready(function (){ $('#noti').load('notificaciones.php'); setInterval('obtenerNoLeidos(); contadorSMSRecibios(); verificarNovedad();',60000); $("#li-noti").hover(function() {
  cargarNotificaciones();
 
 });
 
 obtenerNoLeidos();
 contadorSMSRecibios();
-
+ verificarNovedad();
  });
  var win = Array();
  var win_num = 0;
+ 
+ function mantenerCapa(){
+     
+    // $('#capaSMS').css('display', 'none');
+     
+ }
+ 
 function abrirVentana(url, nombre){
     var valores = "width=950,height=600,fullscreen=1";
   //  var win;

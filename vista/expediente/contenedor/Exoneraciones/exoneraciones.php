@@ -18,6 +18,7 @@ $V_exoneraciones = '<div  style="height: 220px; width: 100%; overflow: auto;">
                                         <td><label>{e_tab2}:</label></td>
                                         <td><label>{e_tab3}:</label></td>
                                         <td><label>{e_tab4}:</label></td>
+                                        <td><label>Fecha de Pago:</label></td>
                                         <td><label>{e_tab5}:</label></td>
                                         
                                     </tr><tr align="center">
@@ -25,6 +26,7 @@ $V_exoneraciones = '<div  style="height: 220px; width: 100%; overflow: auto;">
                                          <td><input id="%AExonerar" size="12px" type="text" maxlength="3" onkeyup="calcularExoneracion();"  class="editar"/></td>
                                          <td><input id="montoExonerado" size="12px" type="text" disabled  class="editar"/></td>
                                          <td><input id="MontoACancelar" size="12px" type="text" disabled class="editar"/></td>
+                                         <td><input id="FechaPago" size="12px" type="date" value="'.date("Y-m-d").'" class="editar"/></td>
                                         
                                         <td><select id="tipoPago" onchange="mostrarOcultarFracciones(this.selectedIndex);" style="width: 100px;" class="selectEditar">
                                             <option value="0">Decontada</option>

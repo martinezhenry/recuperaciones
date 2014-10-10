@@ -189,7 +189,7 @@ function cargarCuentasDeudor($idPersona = "NULL", $cuenta = "NULL")
  *      -- $cuenta = la cuenta de la que se desea obteneder el identificador.
  * 
  * **/
-function buscarIdPersona($cuenta)
+function buscarIdPersona($cuenta, $tipo = 0)
 {
     $id = 18;
     global $e;
@@ -197,6 +197,8 @@ function buscarIdPersona($cuenta)
         return false;
         
     } else {
+        
+    
         global $conex;
         $sql = "select persona from sr_cuenta where cuenta = '$cuenta'";
         $st = $conex -> consulta($sql);
@@ -222,8 +224,11 @@ function buscarIdPersona($cuenta)
             {
                 $cedula =  $fila[0];
             }
-
+            
+            if ($tipo == 0)
             return $cedula;
+            else
+                return $id;
 
         } else
         {
@@ -257,11 +262,12 @@ function cargarGestiones($cuenta)
         return false;
     } else {
         global $conex;
-        $sql =  "select  to_char(g.fecha_ingreso, 'DD/MM/YYYY HH24:MM:SS') as fecha_ingreso, ti.descripcion as tipo_gestion, g.telef_cod_area, g.telef_gestion, g.nombre_contacto, g.apellido_contacto, p.parentesco,  F_QUITA_CARACTER_ESPECIAL(g.descripcion) as observacion, to_char(g.fecha_proxima_gestion, 'DD/MM/YYYY') as fecha_proxima_gestion, g.hora_proxima_gestion, to_char(g.fecha_promesa, 'DD/MM/YYYY') as fecha_promesa, g.monto_promesa, g.gestion, U.NOMBRES|| ' ('||G.USUARIO_INGRESO ||')'  as asesor
+        $sql =  "select  to_char(g.fecha_ingreso, 'DD/MM/YYYY HH24:MM:SS') as fecha_ingreso, ti.descripcion as tipo_gestion, g.telef_cod_area, g.telef_gestion, g.nombre_contacto, g.apellido_contacto, p.parentesco,  g.descripcion as observacion, to_char(g.fecha_proxima_gestion, 'DD/MM/YYYY') as fecha_proxima_gestion, g.hora_proxima_gestion, to_char(g.fecha_promesa, 'DD/MM/YYYY') as fecha_promesa, g.monto_promesa, g.gestion, U.NOMBRES|| ' ('||G.USUARIO_INGRESO ||')'  as asesor
         from SR_GESTION g, sr_cuenta c, sr_codigo_gestion ti, sr_parentesco p, sr_usuario u
         where G.CODIGO_GESTION = TI.CODIGO_GESTION 
         and G.CUENTA = C.CUENTA 
         and G.CLIENTE = C.CLIENTE
+        AND G.CARTERA = C.CARTERA
         and G.GRUPO_GESTION = TI.GRUPO_GESTION
         and G.TABLA_GESTION = TI.TABLA_GESTION
         and P.ID_PAR(+) = G.ID_PARENTESCO
@@ -392,12 +398,14 @@ function cargarAbonos($cuenta)
     } else {
         global $conex;
         $sql = "select a.abono, U.NOMBRES || ' (' || A.USUARIO_GESTOR||')'  AS USUARIO_GESTOR, to_char(a.fecha_deposito, 'DD/MM/YYYY') as fecha_deposito, a.monto_deposito, P.DESCRIPCION as forma_pago, to_char(a.fecha_ingreso, 'DD/MM/YYYY') as fecha_ingreso,
-     B.DESCRIPCION AS BANCO, a.observacion, decode(a.status_abono,'C','CORFIMADO','NO CONFIRMADO') status_abono, a.nro_deposito, a.cuota
-       from SR_ABONO a, tg_forma_pago p, TG_BANCO B, SR_USUARIO U
+     B.DESCRIPCION AS BANCO, a.observacion, decode(a.status_abono,'C','CORFIMADO','NO CONFIRMADO') status_abono, a.nro_deposito, a.cuota,
+     s.url
+       from SR_ABONO a, tg_forma_pago p, TG_BANCO B, SR_USUARIO U, sr_soporte_abonos s
         where
         A.FORMA_PAGO = P.FORMA_PAGO(+)
         AND A.BANCO = B.BANCO(+)
         AND A.USUARIO_GESTOR = U.USUARIO
+        and A.ABONO = S.ID_ABONO(+)
         and a.cuenta = '$cuenta' and a.eliminar = 'N' ORDER BY a.FECHA_INGRESO DESC";
         $st = $conex->consulta($sql);
         $numrow = $conex->filas($st);
@@ -510,9 +518,9 @@ function cargarCuotas($cuenta)
         
     } else {
         global $conex;
-        $sql = " select cuota, fecha_vencimiento, morosidad_dias, monto_capital, monto_interes, monto_interes_mora, monto_otros, status, pago_abono, fecha_asignacion, fecha_ult_actualizacion
+        $sql = " select cuota, fecha_vencimiento, morosidad_dias, monto_capital, monto_interes, monto_interes_mora, monto_otros, decode(status,'P','PAGADO', 'PENDIENTE') as status, pago_abono, fecha_asignacion, fecha_ult_actualizacion
             from sr_cuota
-            where cuenta = '$cuenta' ORDER BY FECHA_CARGA DESC";
+            where cuenta = '$cuenta' ORDER BY cuota desc";
 
 
         $st = $conex->consulta($sql);
@@ -589,7 +597,7 @@ function validarCopia($cliente, $cartera, $asesor, $cuenta){
         $monto = (empty($_SESSION['ult_gestion'][$i]['mPromesa'])) ? 0:$_SESSION['ult_gestion'][$i]['mPromesa'];
         
         $sql = "SELECT 1, c.cartera FROM SR_CUENTA C WHERE C.CUENTA = '$cuenta' AND C.CLIENTE = '$cliente'
-                AND C.SALDO_ACTUAL >= '".$monto."'";
+                AND C.SALDO_ACTUAL >= '".str_replace('.',',',$monto)."'";
         
         //echo $sql;
         //exit();
@@ -667,6 +675,10 @@ function guardarGestion($arr){
         $grupoGestion = trim($arr['grupoGestion']);
         $parentesco_texto = trim($arr['parentesco_texto']);
         
+        
+        
+        
+        
         if ($fProximaGestion == "") {
             $fProximaGestion = $fProximaGestion;
         } else {
@@ -681,13 +693,32 @@ function guardarGestion($arr){
             $fPromesa = date("d/m/Y",strtotime($fPromesa));
         }
        
-       
+       $observaciones = eregi_replace("[\n]", ' ', $observaciones);
         //$fechaGestion = date("m/d/Y",strtotime($fechaGestion));
         //echo $fechaGestion;
        // exit();
         $usuarioIngreso = $_SESSION['USER'];
         $fechaGestion = date("d/m/Y H:i:s");
         global $conex;
+        
+        
+                $sql = "Select cuenta from sr_cuenta where cliente = '$cliente' and cartera = '$cartera' and cuenta = '$cuenta' and area_devolucion is not null";
+        
+        $st = $conex->consulta($sql);
+        
+        while ($fila = $conex->fetch_array($st)){
+            
+            $filas[] = $fila;
+            
+        }
+        
+        if (isset($filas)){
+            
+            return "No se puede cargar una gestion en una cuenta que esta en area de devolucion";
+            
+        }
+        
+        
         $sql = "Select SQ_GESTION.nextval from dual";
 
         $st = $conex->consulta($sql);
@@ -698,7 +729,8 @@ function guardarGestion($arr){
         $nombre = ereg_replace("[^A-Za-z0-9]", " ", $nombre);
         $apellido = ereg_replace("[^A-Za-z0-9]", " ", $apellido);
 
-       // echo $nueva_cadena
+      //  echo $usuarioIngreso;
+        $mPromesa = str_replace(',', '.', $mPromesa);
        
         
         $sql2 = "insert into SR_GESTION (gestion, cliente, cartera, cuenta, usuario_gestor, tabla_gestion, grupo_gestion, codigo_gestion, descripcion, fecha_proxima_gestion, fecha_promesa, hora_promesa, monto_promesa, usuario_ingreso, fecha_ingreso, usuario_ult_mod, fecha_ult_gestion, telef_cod_area, telef_gestion, hora_proxima_gestion, nombre_contacto, status_mercantil, parentesco, apellido_contacto, abonos, eliminar, id_parentesco)
@@ -707,9 +739,41 @@ function guardarGestion($arr){
 
             ";
        //
-        
-       
+       /*
+        $armar = array(
+        'GESTION' => $idGestion,
+        'DESCRIPCION' => $observaciones,
+        'FECHA_PROXIMA_GESTION' => $fProximaGestion,
+        'FECHA_PROMESA' => $fPromesa,
+        'HORA_PROMESA' => '',
+        'MONTO_PROMESA' => $mPromesa,
+        'TELEF_COD_AREA' => $area,
+        'TELEF_GESTION' => $telefono,
+        'HORA_PROXIMA_GESTION' => $hProximaGestion,
+        'NOMBRE_CONTACTO' => $nombre,
+        'APELLIDO_CONTACTO' => $apellido,
+        'ID_PARENTESCO' => $parentesco,
+        'FECHA_ULT_MOD' => 'SYSDATE',
+        'USUARIO_ULT_MOD' => $usuarioIngreso,
+        'TABLA_GESTION' => $tablaGestion,
+        'GRUPO_GESTION' => $grupoGestion,
+        'CODIGO_GESTION' => $tipoGestion,
+        'CUENTA' => $cuenta,
+        'CLIENTE' => $cliente,
+        'CARTERA' => $cartera,
+        'USUARIO_INGRESO' => $usuarioIngreso,
+        'USUARIO_GESTOR' => $usuarioGestor,
+        'FECHA_INGRESO' => 'SYSDATE',
+        'PARENTESCO' => $parentesco_texto,
+        'FECHA_ULT_GESTION' => '',
+        'STATUS_MERCANTIL' => '',
+        'ABONOS' => '',
+        'ELIMINAR' => 'N'   
+                
+        );
+       */
         $respuesta = validacion($sql2, $tablaGestion, $grupoGestion, $tipoGestion);
+        
         if ($respuesta == "" || $respuesta == 1){
     
             $_SESSION['ult_gestion'][] = array(
@@ -738,6 +802,7 @@ function guardarGestion($arr){
                          
                 
             );
+            //$st = $conex->consulta($sql2);
             
             if (!empty($fProximaGestion)){
                 
@@ -771,7 +836,7 @@ function guardarGestion($arr){
                 'fecha_promesa' => $fPromesa
                
             );
-                  //  agendarCuenta($datos);
+                    agendarCuenta($datos);
                     
                 }
                 
@@ -827,11 +892,14 @@ function copiarGestion($cliente, $cartera, $cuenta) {
     $resp = guardarGestion($arr);
     
     if ($resp != "1"){
-        
+        unset($_SESSION['ult_gestion']);
+        $_SESSION['ult_gestion'] = $gestiones;
         return $resp;
     } 
     
    }
+    unset($_SESSION['ult_gestion']);
+    $_SESSION['ult_gestion'] = $gestiones;
     return "1";
    
     
@@ -841,11 +909,17 @@ function copiarGestion($cliente, $cartera, $cuenta) {
 function agendarCuenta($datos){
     
     global $conex;
-    $sql = "DELETE SR_AGENDA WHERE
+   /* $sql = "DELETE SR_AGENDA WHERE
             CUENTA = '".$datos['cuenta']."' 
             AND CLIENTE = '".$datos['cliente']."'
             AND CARTERA = '".$datos['cartera']."'
             AND TIPO_CUENTA = '".$datos['tipo_cuenta']."'
+            ";*/
+    
+     $sql = "DELETE SR_AGENDA WHERE
+            CUENTA = '".$datos['cuenta']."' 
+            AND CLIENTE = '".$datos['cliente']."'
+            AND CARTERA = '".$datos['cartera']."'
             ";
     
     $st = $conex->consulta($sql);
@@ -876,32 +950,73 @@ function modificarGestion($datos){
     
     
     $sql = "UPDATE SR_GESTION SET
-            FECHA_INGRESO = '".$datos['fgestion']."'
-            DESCRIPCION = '".$datos['observaciones']."'
-            FECHA_PROXIMA_GESTION = '".$datos['fproximagestion']."'
-            FECHA_PROMESA = '".$datos['fpromesa']."'
-            MONTO_PROMESA = '".$datos['mpromesa']."'
-            TELEF_COD_AREA = '".$datos['area']."'
-            TELEF_GESTION = '".$datos['telefono']."'
-            HORA_PROXIMA_GESTION = '".$datos['hproximagestion']."'
-            NOMBRE_CONTACTO = '".$datos['nombre']."'
-            APELLIDO_CONTACTO = '".$datos['apellido']."'
-            ID_PARENTESCO = '".$datos['parentesco']."'
-            FECHA_ULT_MOD = SYSDATE
-            USUARIO_ULT_MOD = '".$_SESSION['USER']."'
-            TABLA_GESTION = '".$arrtipogestion[1]."'
-            GRUPO_GESTION = '".$arrtipogestion[2]."'
-            CODIGO_GESTION = '".$arrtipogestion[0]."'
+            FECHA_INGRESO = to_date('".$datos['fgestion']."', 'dd/mm/yyyy hh24:mi:ss'),
+            DESCRIPCION = '".($datos['observaciones'])."',
+            FECHA_PROXIMA_GESTION = '".$datos['fproximagestion']."',
+            FECHA_PROMESA = '".$datos['fpromesa']."',
+            MONTO_PROMESA = '".$datos['mpromesa']."',
+            TELEF_COD_AREA = '".$datos['area']."',
+            TELEF_GESTION = '".$datos['telefono']."',
+            HORA_PROXIMA_GESTION = '".$datos['hproximagestion']."',
+            NOMBRE_CONTACTO = '".$datos['nombre']."',
+            APELLIDO_CONTACTO = '".$datos['apellido']."',
+            ID_PARENTESCO = '".$datos['parentesco']."',
+            FECHA_ULT_MOD = SYSDATE,
+            USUARIO_ULT_MOD = '".$_SESSION['USER']."',
+            TABLA_GESTION = '".$arrtipogestion[1]."',
+            GRUPO_GESTION = '".$arrtipogestion[2]."',
+            CODIGO_GESTION = '".trim($arrtipogestion[0])."'
             WHERE
             GESTION = '".$datos['gestion']."'
             ";
     
+    $arreglo = array(
+        
+        'FECHA_INGRESO' => $datos['fgestion'],
+        'DESCRIPCION' => $datos['observaciones'],
+        'FECHA_PROXIMA_GESTION' => $datos['fproximagestion'],
+        'FECHA_PROMESA' => $datos['fpromesa'],
+        'MONTO_PROMESA' => $datos['mpromesa'],
+        'TELEF_COD_AREA' => $datos['area'],
+        'TELEF_GESTION' => $datos['telefono'],
+        'HORA_PROXIMA_GESTION' => $datos['hproximagestion'],
+        'NOMBRE_CONTACTO' => $datos['nombre'],
+        'APELLIDO_CONTACTO' => $datos['apellido'],
+        'ID_PARENTESCO' => $datos['parentesco'],
+        'FECHA_ULT_MOD' => 'SYSDATE',
+        'USUARIO_ULT_MOD' => trim($_SESSION['USER']),
+        'TABLA_GESTION' => $arrtipogestion[1],
+        'GRUPO_GESTION' => $arrtipogestion[2],
+        'CODIGO_GESTION' => trim($arrtipogestion[0]),
+        'CUENTA' => $datos['cuentaModif'],
+        'CLIENTE' => $datos['clienteModif'],
+        'CARTERA' => $datos['carteraModif'],
+        'USUARIO_INGRESO' => $_SESSION['USER']
+        
+              
+    );
+    
+    
+    
+    $respuesta = validacion($sql, $arrtipogestion[1], $arrtipogestion[2], trim($arrtipogestion[0]), $arreglo);
+    
     global $conex;
     
-    //$st = $conex->consulta($sql);
+    
+   // echo 'respuesta: '.$respuesta;
+    if ($respuesta == ""){
+        
+        $st = $conex->consulta($sql);
+        echo "1";
+    }else {
+        
+        echo $respuesta;
+    }
+    
+    
     
     //echo $sql;
-    echo "Modificacion realizada";
+    
    return;
     
     
@@ -997,6 +1112,44 @@ $lstrNombre = trim($lstrNombre); //Limpiamos los espacios en blanco
 }
 
 
+function validarTelefono($persona, $area, $telefono){
+    
+    $sql = "SELECT * FROM TG_PERSONA_TEL_ADI WHERE PERSONA = '$persona' AND (COD_AREA like '%$area%' AND TELEFONO like '%$telefono%' or cod_area||telefono like '%$area.$telefono%')";
+    global $conex;
+    
+    $st = $conex->consulta($sql);
+    
+    while ($fila = $conex->fetch_array($st)){
+        
+        $filas[] = $fila;
+        
+    }
+    
+    if (isset($filas)){
+        
+        return 1;
+        
+    } else {
+        return 0;
+    }
+    
+    
+}
+
+function guardarTelefono($persona, $area, $telefono, $usuario, $fecha){    
+    $sql = "INSERT INTO TG_PERSONA_TEL_ADI D
+            (PERSONA, COD_AREA, TELEFONO, FUENTE, STATUS_TELEFONO, USUARIO_INGRESO, FECHA_INGRESO, REFERENCIA)
+            VALUES
+            ('$persona','$area','$telefono','1','A','$usuario','$fecha', 'RECUPERACIONES')";
+    global $conex;
+    $st = $conex->consulta($sql);
+    
+    return 1;
+    
+}
+
+
+
 
     //==========================================================================
     //
@@ -1007,7 +1160,7 @@ $lstrNombre = trim($lstrNombre); //Limpiamos los espacios en blanco
 // Se verifica que se obtiene la variable $_GET
 if (isset($_GET)) {
     
-
+//echo "akiii";
     
     // Se verifica si se recibe una variable deudor por el metodo GET
     if (isset($_GET['deudor']))  //=============================================
@@ -1038,7 +1191,7 @@ if (isset($_GET)) {
         
         
         echo '
-                    <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuentas-Tabla" width="100%">
+                    <table style="font-size: 14px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuentas-Tabla" width="100%">
                         <thead>
                             
                             <tr class = "center">
@@ -1048,7 +1201,7 @@ if (isset($_GET)) {
                                 <th><b>'.$e['tcnt_tab3'].'</b></th>
                                 <th><b>'.$e['tcnt_tab4'].'</b></th>
                                 <th><b>'.$e['tcnt_tab5'].'</b></th>
-                                <th><b>'.$e['tcnt_tab8'].'</b></th>    
+                             <!--   <th><b>'.$e['tcnt_tab8'].'</b></th>    -->
                                 <th><b>'.$e['tcnt_tab6'].'</b></th>
                                 <th><b>'.$e['tcnt_tab7'].'</b></th>
                                 <th></th>
@@ -1068,7 +1221,7 @@ if (isset($_GET)) {
         {
             
             $copia = validarCopia($value['CLIENTE'], $value['CARTERA'], $value['GESTOR_CODIGO'], $value['CUENTA']);
-            echo $copia;
+          //  echo $copia;
             $bloquear = ($copia == 1) ? "": "disabled";
             
             $num = str_replace(",", ".",$value['SALDO_ACTUAL']);
@@ -1077,22 +1230,34 @@ if (isset($_GET)) {
             $i++;
             
             $checkeado = ($value['AREA_DEVOLUCION'] != '') ? '':'checked';
+            $clase = 'gradeA';
+            $nombreA = $value['USUARIO_GESTOR'];
+            if ($value['AREA_DEVOLUCION'] != ''){
+               $clase = 'area gradeA';
+                if ($value['AREA_DEVOLUCION'] == '25'){
+                    $clase = 'area25 gradeA';
+                }
+                
+                $nombreA = "Area Devolucion ".$value['AREA_DEVOLUCION'];
+                //
+            }
+         
             
             echo "
 
-                            <tr id='".$value['CUENTA']."' class='gradeA' style=\"cursor: pointer;\">
+                            <tr id='".$value['CUENTA']."' class='".$clase."' style=\"cursor: pointer;\">
                                 
                                 <td align = 'center'><input id='".$i."' name=\"check2\" $checkeado type='checkbox' onclick=\"sumarMontos();\"/></td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML);  activarTabs();'>".$value['NOMBRE']."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML);  activarTabs();' id='cartera_".$i."'>".$value['CARTERA']."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML);  activarTabs();'>".$value['DESCRIPCION']."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML);  activarTabs();' id='cuenta_".$i."'>".$value['CUENTA']."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML ); activarTabs();'>".$value['USUARIO_GESTOR']."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML ); activarTabs();'>".$value['AREA_DEVOLUCION']."</td>
-                                <td id='saldoActualT_".$i."' class='left' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); activarTabs();'>".$_SESSION['simb_moneda'].' '.$num."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); activarTabs();'>".$value['FECHA_INGRESO']."</td>
-                                <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); activarTabs();'>".$value['SITUACION_CUENTA']."</td>    
-                                <td align = 'center'><button type=\"button\" id=\"".$value['CLIENTE']."_".$value['CARTERA']."_".$value['CUENTA']."\" title=\"Copiar Gestión\" $bloquear onclick=\"copiarGestion(this.id, 'saldoActualT_".$i."');\" name=\"btn_Copiar\"><img width=\"20px\" heigth=\"20px\" src=\"img/ico/copy.ico\"/></button></td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$value['NOMBRE']."</td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();' id='cartera_".$i."'>".$value['CARTERA']."</td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$value['DESCRIPCION']."</td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();' id='cuenta_".$i."'>".$value['CUENTA']."</td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$nombreA."</td>
+                              <!--  <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML ); activarTabs();'>".$value['AREA_DEVOLUCION']."</td> -->
+                                <td id='saldoActualT_".$i."' class='left' onclick='if ($(\'#AgregarActivo\').val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$_SESSION['simb_moneda'].' '.$num."</td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$value['FECHA_INGRESO']."</td>
+                                <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$value['SITUACION_CUENTA']."</td>    
+                                <td align = 'center'><button type=\"button\" id=\"".$value['CLIENTE']."_".$value['CARTERA']."_".$value['CUENTA']."\" title=\"Copiar Gestión\" $bloquear onclick=\"this.disabled = true; copiarGestion(this.id, 'saldoActualT_".$i."');\" name=\"btn_Copiar\"><img width=\"20px\" heigth=\"20px\" src=\"img/ico/copy.ico\"/></button></td>
                             
                             <input id= 'usuarioGestor_".$i."' type='hidden' value= '".$value['GESTOR_CODIGO']."'>
                             <input id= \"cliente_".$i."\" type=\"hidden\" value='".$value['CLIENTE']."'>
@@ -1134,7 +1299,7 @@ if (isset($_GET)) {
             
             echo '
  
-                    <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuentas-Tabla" width="100%">
+                    <table style="font-size: 12px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuentas-Tabla" width="100%">
                         <thead>
                             
                             <tr>
@@ -1245,10 +1410,10 @@ if (isset($_GET)) {
     echo '
 
 
-<table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" name="tablaGestiones" id="gestiones-Tabla" width="100%">
+<table  style="font-size: 14px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" name="tablaGestiones" id="gestiones-Tabla" width="100%">
 	<thead>
 		<tr>
-			<th>Check</th>
+			<th onclick="capturarFlecha();">Check</th>
                         <th  class = "center">'.$e['tg_tab13'].'</th>
 			<th  class = "center">'.$e['tg_tab1'].'</th>
 			<th  class = "center">'.$e['tg_tab2'].'</th>
@@ -1272,7 +1437,7 @@ if (isset($_GET)) {
            $i++;
           
 	echo '	
-		<tr id="'.$value['GESTION'].'"  class="gradeA" style="cursor: pointer;" onclick= "colocarTexto(document.getElementById(\'observaciones\'), document.getElementById(\'textoObservaciones_'.$i.'\').value);">
+		<tr id="'.$value['GESTION'].'"  class="gradeA" style="cursor: pointer;" onclick= "$(\'#observaciones\').val($(\'#textoObservaciones_'.$i.'\').val());">
 
                                              <td><input id="check1" type="checkbox" name="check1" value="'.$value['GESTION'].'"></td>
                                              <td class="center">'.$value['ASESOR'].'</td>
@@ -1291,7 +1456,7 @@ if (isset($_GET)) {
                                              <td class="center">'.$value['MONTO_PROMESA'].'</td>
                                         
                                              
-                                             <input id="textoObservaciones_'.$i.'" type="hidden" value="'.$value['OBSERVACION'].'">
+                                             <input id="textoObservaciones_'.$i.'" type="hidden" value="'.htmlentities($value['OBSERVACION']).'">
                                          </tr> 
                          
 	';
@@ -1322,7 +1487,7 @@ if (isset($_GET)) {
             
             echo '
             
-                                               <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" name="tablaGestiones" id="gestiones-Tabla" width="100%">
+                                               <table style="font-size: 12px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" name="tablaGestiones" id="gestiones-Tabla" width="100%">
 	<thead>
 		<tr>
 			<!--<th  class = "center">Check</th>-->
@@ -1608,10 +1773,10 @@ if (isset($_GET)) {
         if (is_array($abonos))
         {
             // Imprimimos la tabla de abonos
-               
+         
             echo '
             
-                                           <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="abonos-Tabla" width="100%">
+                                           <table style="font-size: 14px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="abonos-Tabla" width="100%">
 	<thead>
 		<tr>
 			<th>Check</th>
@@ -1625,6 +1790,7 @@ if (isset($_GET)) {
                         <th>'.$e['ta_tab7'].'</th>
                         <th>'.$e['ta_tab8'].'</th>
                         <th>'.$e['ta_tab10'].'</th>
+                        <th>Soporte</th>
                    
 		</tr>
 	</thead>
@@ -1636,9 +1802,26 @@ if (isset($_GET)) {
        {
            $i++;
            
+              if ($value['URL'] == ""){
+                
+                $url = "";
+                $txt_url = "Adjuntar";
+                $accion = "$('#archivo').click(); $('#btn_upload').removeAttr('hidden'); $('#archivo').removeAttr('hidden');";
+             //   <input class="botonEditar" onclick="cargarSoporte();" name="enviar" type="button" value="Upload File" />
+                
+                
+            } else {
+                
+                 $url = $value['URL'];
+                $txt_url = "Soporte";
+                $accion = "";
+             //   <input class="botonEditar" onclick="cargarSoporte();" name="enviar" type="button" value="Upload File" />
+                
+            }
+           
            echo '
       
-                    	<tr class="gradeA" id="'.$value['ABONO'].'" onclick= "colocarTexto(document.getElementById(\'observaciones\'), document.getElementById(\'observacionAbono_'.$i.'\').value);">
+                    	<tr class="gradeA" id="'.$value['ABONO'].'" onclick= "$(\'#observaciones\').val($(\'#observacionAbono_'.$i.'\').val());">
 		<td class="center"><input type="checkbox" onclick="activarBntEliminar(document.getElementsByName(\'check-abonos\'))" name="check-abonos" id="check-abonos" value="'.$value['ABONO'].'"></td>
                         <td class="center">'.$value['ABONO'].'</td>
 			<td class="center">'.$value['USUARIO_GESTOR'].'</td>
@@ -1650,6 +1833,7 @@ if (isset($_GET)) {
 			<td class="center">'.$value['FECHA_INGRESO'].'</td>
 			<td class="center">'.$value['BANCO'].'</td>
 			<td class="center">'.$value['STATUS_ABONO'].'</td>
+                        <td class="center"><a target="_blank" onclick="'.$accion.'" href="http://'.$url.'">'.$txt_url.'</a></td>
 			
 			
                         <input id="observacionAbono_'.$i.'" name="observacionAbono_'.$i.'" type="hidden" value="'.$value['OBSERVACION'].'" />
@@ -1692,6 +1876,7 @@ if (isset($_GET)) {
                         <th>'.$e['ta_tab7'].'</th>
                         <th>'.$e['ta_tab8'].'</th>
                         <th>'.$e['ta_tab10'].'</th>
+                        <th>Soporte</th>
                    
 		</tr>
 	</thead>
@@ -1708,6 +1893,7 @@ if (isset($_GET)) {
 			<td class="center">&nbsp;</td>
                         <td>&nbsp;</td>
 			<td>&nbsp;</td>
+                        <td>&nbsp;</td>
 			
              
 		</tr>
@@ -1723,6 +1909,7 @@ if (isset($_GET)) {
                         <td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+                        <td>&nbsp;</td>
                         
                
 		</tr>
@@ -1740,6 +1927,7 @@ if (isset($_GET)) {
                         <td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+                        <td>&nbsp;</td>
                         
                    
 			
@@ -1756,6 +1944,7 @@ if (isset($_GET)) {
                         <td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+                        <td>&nbsp;</td>
                         
               
 		</tr>
@@ -1772,6 +1961,7 @@ if (isset($_GET)) {
                         <td>&nbsp;</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
+                        <td>&nbsp;</td>
                         
                   
 		</tr>
@@ -1850,12 +2040,33 @@ if (isset($_GET)) {
         }
         
         
+        
         $fechaDeposito = date("d/m/Y",strtotime($fechaDeposito));
                 
                 
         
         
         global $conex;
+        
+        
+        $sql = "Select cuenta from sr_cuenta where cliente = '$cliente' and cartera = '$cartera' and cuenta = '$cuenta' and area_devolucion is not null";
+        
+        $st = $conex->consulta($sql);
+        
+        while ($fila = $conex->fetch_array($st)){
+            
+            $filas[] = $fila;
+            
+        }
+        
+        if (isset($filas)){
+            
+            echo "No se puede cargar un abono en una cuenta que esta en area de devolucion";
+            exit();
+        }
+        
+        
+        
         $sql = "Select SQ_ABONO.nextval from dual";
         
       
@@ -1893,7 +2104,7 @@ if (isset($_GET)) {
         $st = $conex->consulta($sql2);
 
         
-        echo "1";
+        echo "1;".$idAbono;
         exit();
         
      // Se verifica si se recibe una variable selectAbonos por el metodo GET
@@ -1937,6 +2148,7 @@ if (isset($_GET)) {
          // Se verifica si se recibe una variable eliminarAbonos por el metodo GET
     } else if (isset($_GET['eliminarAbonos'])) //===============================
     {
+        //echo "akiii";
         $idAbonos = $_GET['idAbonos'];
         $arrIdAbonos = explode(",", $idAbonos);
         
@@ -1953,7 +2165,7 @@ if (isset($_GET)) {
             $st = $conex -> consulta($sql);
         }
         
-        echo "elimino";
+        echo "1";
         exit();
             
         }
@@ -1970,8 +2182,32 @@ if (isset($_GET)) {
         
         $arrIdGestiones = explode(",", $idGestiones);
          if ($_SESSION['USER'][0] == 'T' || $_SESSION['USER'][0] == 'C'){
-             echo "Accion no permitida";
-             exit();
+             //echo "Accion no permitida";
+                 foreach ($arrIdGestiones as $value)
+                    {
+             $sql = "SELECT * FROM SR_GESTION WHERE GESTION = '$value' AND USUARIO_GESTOR = '".$_SESSION['USER']."' AND TRUNC(FECHA_INGRESO) = TRUNC(SYSDATE)";
+             
+             $st = $conex->consulta($sql);
+             
+             while ($fila = $conex->fetch_array($st)){
+                 $filas[] = $fila;
+             }
+             
+             if (isset($filas)){
+                 
+              
+                        $sql2 = "update SR_GESTION set ELIMINAR = 'S' where GESTION = '$value'";
+                        $st2 = $conex -> consulta($sql2);
+                    }
+                    unset($sql);
+                    unset($st);
+                    
+                 
+             }
+             echo "1";
+                    exit();
+             
+            
          } else {
              
              foreach ($arrIdGestiones as $value)
@@ -1999,7 +2235,7 @@ if (isset($_GET)) {
             //Imprimimos la tabla cuotas
             echo '
 
-                           <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuotas-Tabla" width="100%">
+                           <table style="font-size: 14px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="cuotas-Tabla" width="100%">
                                             <thead>
                                                     <tr>
                                                             <th>Checks</th>
@@ -2010,11 +2246,12 @@ if (isset($_GET)) {
                                                             <th>'.$e['cut_tab5'].'</th>
                                                             <th>'.$e['cut_tab6'].'</th>
                                                             <th>'.$e['cut_tab7'].'</th>
+                                                          <!--  <th>'.$e['cut_tab8'].'</th> -->
                                                             <th>'.$e['cut_tab8'].'</th>
-                                                            <th>'.$e['cut_tab9'].'</th>
                                                             <th>'.$e['cut_tab10'].'</th>
                                                             <th>'.$e['cut_tab11'].'</th>
                                                             <th>'.$e['cut_tab12'].'</th>
+                                                            <th>Status</th>    
 
 
                                                     </tr>
@@ -2040,11 +2277,12 @@ if (isset($_GET)) {
                                     <td>'.$_SESSION['simb_moneda'].' '.cambiarMoneda(str_replace(',','.',$value['MONTO_INTERES'])).'</td>
                                     <td>'.$_SESSION['simb_moneda'].' '.cambiarMoneda(str_replace(',','.',$value['MONTO_INTERES_MORA'])).'</td>
                                     <td>'.$_SESSION['simb_moneda'].' '.cambiarMoneda(str_replace(',','.',$value['MONTO_OTROS'])).'</td>
-                                    <td>PREGUNTAR</td>
+                                <!--    <td>PREGUNTAR</td> -->
                                     <td class="saldoTotal_cuotas">'.$_SESSION['simb_moneda'].' '.cambiarMoneda($saldoTotal).'</td>
                                     <td>'.$value['PAGO_ABONO'].'</td>
                                     <td>'.$value['FECHA_ASIGNACION'].'</td>
                                     <td>'.$value['FECHA_ULT_ACTUALIZACION'].'</td>
+                                    <td>'.$value['STATUS'].'</td>
 
                                  </tr>
                 
@@ -2074,7 +2312,7 @@ if (isset($_GET)) {
                                                             <th>'.$e['cut_tab5'].'</th>
                                                             <th>'.$e['cut_tab6'].'</th>
                                                             <th>'.$e['cut_tab7'].'</th>
-                                                            <th>'.$e['cut_tab8'].'</th>
+                                                      <!--      <th>'.$e['cut_tab8'].'</th> -->
                                                             <th>'.$e['cut_tab9'].'</th>
                                                             <th>'.$e['cut_tab10'].'</th>
                                                             <th>'.$e['cut_tab11'].'</th>
@@ -2095,28 +2333,7 @@ if (isset($_GET)) {
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-
-
-
-
-                                            </tr>
-
-
-                                            <tr class="gradeA" id="5">
-
-                                                    <td class="center"></td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
+                                               <!--     <td>&nbsp;</td> -->
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -2138,7 +2355,28 @@ if (isset($_GET)) {
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
+                                          <!--     <td>&nbsp;</td> -->
                                                     <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+
+
+
+
+                                            </tr>
+
+
+                                            <tr class="gradeA" id="5">
+
+                                                    <td class="center"></td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                 <!--     <td>&nbsp;</td> -->
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -2159,7 +2397,7 @@ if (isset($_GET)) {
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
+                                                  <!--     <td>&nbsp;</td> -->
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -2179,7 +2417,7 @@ if (isset($_GET)) {
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
-                                                    <td>&nbsp;</td>
+                                                <!--     <td>&nbsp;</td> -->
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
                                                     <td>&nbsp;</td>
@@ -2203,7 +2441,7 @@ if (isset($_GET)) {
                                                             <th id="selectz"></th>
                                                             <th id="selectz"></th>
                                                             <th id="selectz"></th>
-                                                            <th id="selectz"></th>
+                                                       <!--     <th id="selectz"></th> -->
                                                             <th id="selectz"></th>
                                                             <th id="selectz"></th>
                                                             <th id="selectz"></th>
@@ -2262,8 +2500,25 @@ if (isset($_GET)) {
     } else if (isset($_GET['modificarGestion'])){
         
         
+        
+    
+        
         if ($_SESSION['USER'][0] == 'T' || $_SESSION['USER'][0] == 'C'){
-         
+            
+           /* $sql = "SELECT 1 FROM SR_GESTION WHERE USUARIO_GESTOR = '".$_SESSION['USER']."' AND TRUNC(FECHA_INGRESO) = TRUNC(SYSDATE) and gestion = '".$_GET['gestion']."'";
+            
+            $st = $conex->consulta($sql);
+            
+            while ($fila = $conex->fetch_array($st)){
+                $filas[] = $fila;
+            }
+            
+            if (isset($filas)){
+                  $respuesta = modificarGestion($_GET);
+                  echo $respuesta;
+                  exit();
+            }*/
+            
             echo "0";
             exit();
         } else {
@@ -2304,6 +2559,47 @@ if (isset($_GET)) {
         
         
         
+    } else if (isset($_GET['validarTelefono'])){
+        
+        $telefono = $_GET['telefono'];
+        $area = $_GET['area'];
+        $persona = $_GET['persona'];
+        
+        $resp = validarTelefono($persona, $area, $telefono);
+        
+        if ($resp == 1){
+            
+            echo "1";
+            
+        } else {
+            
+            echo "0";
+            
+        }
+        
+        
+    } else if (isset($_GET['guardarTelefono'])){
+        
+        $telefono = $_GET['telefono'];
+        $area = $_GET['area'];
+        $persona = $_GET['persona'];
+        $usuario = $_SESSION['USER'];
+        $fecha = date('d/m/Y');
+        
+        
+        $resp = guardarTelefono($persona, $area, $telefono, $usuario, $fecha);
+        
+        if ($resp == 1){
+            
+            echo "1";
+            
+        } else {
+            
+            echo "0";
+            
+        }
+        
+        
     }
     
     
@@ -2312,7 +2608,7 @@ if (isset($_GET)) {
 
 
 
-function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
+function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion, $armar = 0){
       $id = 26;
       
      
@@ -2321,26 +2617,36 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
           
       } else {
          
-
+          if ($armar == 0) {
+             
         preg_match('/\((.+)\)/', $sql, $campos);
         $proceso = 0;
-
+        //echo $sql;
     $campos = explode(",", $campos[1]);
-
+    $sql = str_replace('SYSDATE',"'D_ACTUAL'",$sql);
     preg_match('/\'(.+)\'/', trim($sql), $valores);
-  //  print_r(trim($sql));
-    $valores = str_replace("'", "", $valores[0]);
+   // print_r(trim($valores[0]));
+    $valores = str_replace("',", ";", $valores[0]);
+   // print_r($valores);
+    $valores = str_replace("D_ACTUAL","SYSDATE",$valores);
+    $valores = str_replace("'","",$valores);
+    $valores = explode(";", $valores);
     
-    $valores = explode(",", $valores);
-
-    
+  //  print_r($valores);
+   // exit();
     for ($i=0; $i < count($campos); $i++){
 
-        $arreglo[trim(strtoupper($campos[$i]))] = trim($valores[$i]);
+        $arreglo[trim(strtoupper($campos[$i]))] = trim(str_replace('.',',',$valores[$i]));
 
 
     }
-
+          } else {
+              
+              
+              $arreglo = $armar;
+              
+              
+          }
   //  echo print_r($valores);
         global $conex;
         $sql3 = "SELECT P.ID_PARAMETROS, P.CAMPO, P.VALOR, P.MENSAJE, O.SIMBOLO AS OPERADOR, P.TIPO_PROCESO, P.SUPERIOR FROM SR_PARAMETROS P, SR_OPERADORES O WHERE O.ID_OPERADOR = P.OPERADOR AND TABLA_GESTION = '$tablaGestion'
@@ -2399,7 +2705,7 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
 
                         } else if (strnatcmp($fila['OPERADOR'],">") === 0){
 
-
+                           
                             if (strnatcmp($value, $fila['VALOR']) == -1 || strnatcmp($value, $fila['VALOR']) == 0){
 
                            $respuesta .= " ".$fila['MENSAJE'];
@@ -2503,7 +2809,7 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
 
             $proceso = 1;
         } else if ($fila['TIPO_PROCESO'] == "comparacion"){
-            
+            // print_r($arreglo);
                   foreach ($arreglo as $key => $value) {
                 $key = trim($key);
                 $fila['CAMPO'] = trim($fila['CAMPO']);
@@ -2511,7 +2817,7 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
                 $fila['VALOR'] = trim($fila['VALOR']);
             if (strnatcmp((strtoupper($fila['CAMPO'])), (strtoupper($key))) === 0){
 
-
+                
             $operacion = $fila['VALOR'];
                // $operacion = "MONTO_PROMESA*2";
             foreach ($arreglo as $clave => $va) {
@@ -2521,8 +2827,8 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
 
             $sql2 = "select 1 from dual where ".str_replace(';','',$operacion);
           //  echo $sql2;
-        //  echo $sql2;
           //  echo $sql2;
+          //    echo $sql2;
             
             if ($fila['SUPERIOR'] == 1){
                 
@@ -2596,7 +2902,9 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
         }
 
     }
-
+    
+    if ($armar == 0){
+    
     if ($proceso == 1 && $respuesta == ""){
 
                 //$valores_cad = implode(",", $valores);
@@ -2614,26 +2922,31 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion){
             }
             $campo_cad = implode(",", $c);
             $valores_cad = implode(",", $v);
+            //echo $valores_cad;
            // echo "<br>campos:<br>";
            // print_r($c);
             // echo "<br>valores:<br>";
             //print_r($v);
             // echo "<br>SQL:<br>";
             $query = "insert into SR_GESTION (".$campo_cad.") values (".$valores_cad.")";
-           //$st = $conex->consulta($query);
+           $st = $conex->consulta($query);
            // echo $query;
 
     } else if ($respuesta == ""){
 
-     ////   $st = $conex->consulta($sql);
+      $st = $conex->consulta($sql);
 
 
     }
       //  echo $query;
         return $respuesta;
+      } else {
+          
+          return $respuesta;
+          
       }
 
-    
+      } 
 }
 /*
  *  Autor: Henry Martinez

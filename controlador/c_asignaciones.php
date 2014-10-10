@@ -51,7 +51,16 @@ function cargarAsignaciones($cuenta)
                       cu.fecha_asignacion,
                       cu.intereses_mora, 
                       cu.monto_total, 
-                      cu.capital_vencido
+                      cu.capital_vencido,
+                      CDE.DIAS_MORA,
+                      CDE.FECHA_CASTIGO,
+                      CDE.FECHA_LIQUIDACION,
+                      CDE.SALDO_INTERES,
+                      CDE.SALDO_MORA,
+                      CDE.FECHA_ULTIMO_PAGO,
+                      CDE.MONTO_ULTIMO_PAGO,
+                      CDE.SALDO_CAPITAL,
+                      CDE.SALDO_CAPITAL_VENCIDO
                    from sr_cuenta cu, 
                      tg_cliente ci, 
                      sr_cartera ca, 
@@ -60,7 +69,8 @@ function cargarAsignaciones($cuenta)
                      --sr_area_asignacion ar, 
                      sr_area_devolucion ad, 
                      --SR_ABONO ab, 
-                     sr_tipo_credito ce
+                     sr_tipo_credito ce,
+                     sr_cuenta_detalle cde
                    where -- CU.AREA_ASIGNACION = AR.AREA_ASIGNACION
                      CU.AREA_DEVOLUCION = AD.AREA_DEVOLUCION(+)
                     and CU.CARTERA = CA.CARTERA 
@@ -72,6 +82,9 @@ function cargarAsignaciones($cuenta)
                     and TI.CARTERA = CU.CARTERA
                     and CA.CLIENTE = CI.CLIENTE
                     and TI.CLIENTE = CI.CLIENTE
+                    and cu.cuenta = cde.cuenta(+)
+                    and cu.cliente = cde.cliente(+)
+                    and cu.cartera = cde.cartera(+)
                     and cu.cuenta = '$cuenta'";
 
         $st = $conex->consulta($sql);
@@ -113,9 +126,10 @@ if (isset($_GET['cargarAsiganaciones']))
     if (is_array($asiganacion))
     {
         // Se recorre el arreglo
+      //  print_r(count($asiganacion[0]));
         foreach ($asiganacion as $value) {
             // Se imprimen los valores en una cadena
-            echo $cadena = $value[0]."*".$value[1]."*".$value[3]."*".$value[5]."*".$value[6]."*".$value[7]."*".$value[8]."*".$value[9]."*".$value[10]."*".$value[11]."*".$value[12]."*".$value[13]."*".$value[14]."*".$value[15]."*".$value[16]."*".$value[18]."*".$value[19]."*".$value[20]."*".$value[21]."*".$value[22]."*".$value[23]."*".$value[24]."*".$value[25]."*".$value[26]."*".$value[27]."*".$value[28]."*".$value[29]."*".$value[30];
+            echo $cadena = $value[0]."*".$value[1]."*".$value[3]."*".$value[5]."*".$value[6]."*".$value[7]."*".$value[8]."*".$value[9]."*".$value[10]."*".$value[11]."*".$value[12]."*".$value[13]."*".$value[14]."*".$value[15]."*".$value[16]."*".$value[18]."*".$value[19]."*".$value[20]."*".$value[21]."*".$value[22]."*".$value[23]."*".$value[24]."*".$value[25]."*".$value[26]."*".$value['FECHA_ASIGNACION']."*".$value[28]."*".$value[29]."*".$value['DIAS_MORA']."*".$value['FECHA_CASTIGO']."*".$value['FECHA_LIQUIDACION']."*".$value['SALDO_INTERES']."*".$value['SALDO_MORA']."*".$value[35]."*".$value[36]."*".$value['SALDO_CAPITAL']."*".$value['SALDO_CAPITAL_VENCIDO']."*".$value['MONTO_ULTIMO_PAGO']."*".$value['FECHA_ULTIMO_PAGO'];
             
         }
     } else {

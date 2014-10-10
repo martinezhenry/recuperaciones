@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-$V_gestiones = '<div style="width: 100%; height: 190px; overflow: auto; outline: none;" id="gestiones">
+$V_gestiones = '<div style="width: 100%; height: 240px; overflow: auto; outline: none;" id="gestiones">
                       
 
      <table style="font-size: 11px;" cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="gestiones-Tabla" width="100%">

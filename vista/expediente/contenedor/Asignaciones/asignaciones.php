@@ -20,9 +20,10 @@ $V_asignaciones = '                  <div  style="height: 220px; width: 100%; ov
                                   
             <label>{a_tab6}:</label> <input style="font-size: 11px;" id="saldoAnteriorAsignacion" type="text" disabled class="editar"/><br>
                                   <label>{a_tab7}:</label> <input style="font-size: 11px;" id="saldoActualAsignacion" type="text" disabled class="editar"/><br>
-                                  <label>{a_tab8}:</label> <input style="font-size: 11px;" id="fechaVencimientoAsignacion" type="text" disabled class="editar"/><br>
-                                  <label>{a_tab9}:</label> <input style="font-size: 11px;" id="areaDevolucionAsignacion" type="text" disabled class="editar"/><br>
-                                  <label>{a_tab10}:</label> <input style="font-size: 11px;" id="fechaDevolucionAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Fecha Castigo:</label> <input style="font-size: 11px;" id="fechaCastigoAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Fecha Liquidacion:</label> <input style="font-size: 11px;" id="fechaLiquidacionAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Fecha Vencimiento:</label> <input style="font-size: 11px;" id="fechaVencimientoAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Días Mora:</label> <input style="font-size: 11px;" id="diasMoraAsignacion" type="text" disabled class="editar"/><br>
                                   </td>
                                   <td>
             <label>{a_tab11}:</label> <input style="font-size: 11px;" id="devolucionAsignacion" type="text" disabled class="editar"/><br>
@@ -33,8 +34,9 @@ $V_asignaciones = '                  <div  style="height: 220px; width: 100%; ov
                                   
 
             <label>{a_tab16}:</label> <input style="font-size: 11px;" id="tipoCreditoAsignacion" type="text" disabled class="editar"/><br>
-                                  <label>{a_tab17}:</label> <input style="font-size: 11px;" id="stickerAsignacion" type="text" disabled class="editar"/><br>
-                                  <label>{a_tab18}:</label> <input style="font-size: 11px;" id="gestionadaAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Fecha Ult. Pago:</label> <input style="font-size: 11px;" id="fechaUltPagoAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Monto Ult. Pago:</label> <input style="font-size: 11px;" id="montoUltPagoAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Gestionada:</label> <input style="font-size: 11px;" id="gestionadaAsignacion" type="text" disabled class="editar"/><br>
                                 <!--  <label>{a_tab19}:</label> <input style="font-size: 11px;" id="observacionInternaAsignacion" type="text" disabled class="editar"/><br> -->
                                   <label>{a_tab20}:</label> <input style="font-size: 11px;" id="observacionExternaAsignacion" type="text" disabled class="editar"/><br>
                                   </td>
@@ -44,11 +46,12 @@ $V_asignaciones = '                  <div  style="height: 220px; width: 100%; ov
                                   <label>{a_tab23}:</label> <input style="font-size: 11px;" id="tipoCuentaClienteAsignacion" type="text" disabled class="editar"/><br>
                                   <label>{a_tab24}:</label> <input style="font-size: 11px;" id="tipoAsignacionAsignacion" type="text" disabled class="editar"/><br>
                                   <label>{a_tab25}:</label> <input style="font-size: 11px;" id="fechaAsignacionAsignacion" type="text" disabled class="editar"/><br>
-                                  
-
-            <label>{a_tab26}:</label> <input style="font-size: 11px;" id="interesesMoraAsignacion" type="text" disabled class="editar"/><br>
-                                  <label>{a_tab27}:</label> <input style="font-size: 11px;" id="montoTotalAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Capital:</label> <input style="font-size: 11px;" id="capitalAsignacion" type="text" disabled class="editar"/><br> 
                                   <label>{a_tab28}:</label> <input style="font-size: 11px;" id="capitalVencidoAsignacion" type="text" disabled class="editar"/><br>
+                                  <label>Intereses:</label> <input style="font-size: 11px;" id="interesesNormalesAsignacion" type="text" disabled class="editar"/><br>
+            <label>Mora:</label> <input style="font-size: 11px;" id="interesesMoraAsignacion" type="text" disabled class="editar"/><br>
+                                
+                                  
                                   
                                   </td>
                                   <td style="width: 110px">
