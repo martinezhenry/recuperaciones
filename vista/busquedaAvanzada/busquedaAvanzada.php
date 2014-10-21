@@ -39,7 +39,7 @@ $busqueda = "<div>
             <td>
             <div style='display: table-caption;'>
                 <label> Telefono</label>
-                <input type='text' maxlength='7' name='bus_telefono' id='bus_telefono'/>
+                <input type='text' maxlength='11' name='bus_telefono' id='bus_telefono'/>
             </div>
             </td>
             

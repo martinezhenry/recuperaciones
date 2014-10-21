@@ -42,10 +42,13 @@ class oracle{
  
  function get_paso() { return $this->paso; }
  function get_servidor() { return $this->servidor; }
- function get_conexion() { $this->conexion = oci_connect($this->usuario, $this->password, $this->servidor, 'UTF8_UNICODE'); }
+ function get_conexion() { return $this->conexion = oci_connect($this->usuario, $this->password, $this->servidor); }
  function get_ip_conex() { return $this->getRealIP(); }
  
  /* METODO PARA CONECTAR CON LA BASE DE DATOS*/
+ 
+ 
+  
   function conectar()
  {
 

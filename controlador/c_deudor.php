@@ -435,14 +435,20 @@ function cargarAbonos($cuenta)
  *  Carga las formas de pago de la BD
  * 
  **/
-function cargarFormaPago()
+function cargarFormaPago($cartera, $cliente)
 {
     $id = 23;
     if (!autorizar($id, $_SESSION['USER'])){
         return false;
     } else {
         global $conex;
-        $sql = "select forma_pago, descripcion from tg_forma_pago";
+        $sql = "    SELECT A.DESCRIPCION,
+       LTRIM(TO_CHAR(A.FORMA_PAGO)) as FORMA_PAGO
+FROM TG_FORMA_PAGO A, TG_FORMA_PAGO_CLIENTE B
+WHERE A.FORMA_PAGO = B.FORMA_PAGO
+AND B.CLIENTE = $cliente
+AND B.CARTERA = $cartera
+ORDER BY A.DESCRIPCION";
 
         $st = $conex->consulta($sql);
         $numrow = $conex->filas($st);
@@ -730,16 +736,16 @@ function guardarGestion($arr){
         $apellido = ereg_replace("[^A-Za-z0-9]", " ", $apellido);
 
       //  echo $usuarioIngreso;
-        $mPromesa = str_replace(',', '.', $mPromesa);
+        $mPromesa = str_replace('.', ',', $mPromesa);
        
         
         $sql2 = "insert into SR_GESTION (gestion, cliente, cartera, cuenta, usuario_gestor, tabla_gestion, grupo_gestion, codigo_gestion, descripcion, fecha_proxima_gestion, fecha_promesa, hora_promesa, monto_promesa, usuario_ingreso, fecha_ingreso, usuario_ult_mod, fecha_ult_gestion, telef_cod_area, telef_gestion, hora_proxima_gestion, nombre_contacto, status_mercantil, parentesco, apellido_contacto, abonos, eliminar, id_parentesco)
              values 
-            ('$idGestion', '$cliente', '$cartera', '$cuenta', '$usuarioGestor', '$tablaGestion', '$grupoGestion', '$tipoGestion', '$observaciones', '$fProximaGestion', '$fPromesa', '', '$mPromesa', '$usuarioIngreso', SYSDATE, '$usuarioIngreso', '', '$area', '$telefono', '$hProximaGestion', '$nombre', '', '$parentesco_texto', '$apellido', '', 'N', '$parentesco')
+            ('$idGestion', '$cliente', '$cartera', '$cuenta', '$usuarioGestor', '$tablaGestion', '$grupoGestion', '$tipoGestion', :obsrv, '$fProximaGestion', '$fPromesa', '', '$mPromesa', '$usuarioIngreso', SYSDATE, '$usuarioIngreso', '', '$area', '$telefono', :hproxGestion, '$nombre', '', '$parentesco_texto', '$apellido', '', 'N', '$parentesco')
 
             ";
        //
-       /*
+       
         $armar = array(
         'GESTION' => $idGestion,
         'DESCRIPCION' => $observaciones,
@@ -771,8 +777,8 @@ function guardarGestion($arr){
         'ELIMINAR' => 'N'   
                 
         );
-       */
-        $respuesta = validacion($sql2, $tablaGestion, $grupoGestion, $tipoGestion);
+       
+        $respuesta = validacion($sql2, $tablaGestion, $grupoGestion, $tipoGestion, $armar);
         
         if ($respuesta == "" || $respuesta == 1){
     
@@ -802,7 +808,13 @@ function guardarGestion($arr){
                          
                 
             );
-            //$st = $conex->consulta($sql2);
+            
+            //$conex->conectar();
+            $st = oci_parse($conex->get_conexion(), $sql2);
+            oci_bind_by_name($st, ':obsrv', $observaciones);
+            oci_bind_by_name($st, ':hproxGestion', $hProximaGestion);
+            
+            $st = oci_execute($st);
             
             if (!empty($fProximaGestion)){
                 
@@ -836,7 +848,7 @@ function guardarGestion($arr){
                 'fecha_promesa' => $fPromesa
                
             );
-                    agendarCuenta($datos);
+                   agendarCuenta($datos);
                     
                 }
                 
@@ -1254,7 +1266,7 @@ if (isset($_GET)) {
                                 <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();' id='cuenta_".$i."'>".$value['CUENTA']."</td>
                                 <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$nombreA."</td>
                               <!--  <td class='center' onclick='cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML ); activarTabs();'>".$value['AREA_DEVOLUCION']."</td> -->
-                                <td id='saldoActualT_".$i."' class='left' onclick='if ($(\'#AgregarActivo\').val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$_SESSION['simb_moneda'].' '.$num."</td>
+                                <td id='saldoActualT_".$i."' class='left' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$_SESSION['simb_moneda'].' '.$num."</td>
                                 <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$value['FECHA_INGRESO']."</td>
                                 <td class='center' onclick='if ($(\"#AgregarActivo\").val() != 1) { cargarGestiones(document.getElementById(\"cuenta_".$i."\").innerHTML, document.getElementById(\"cliente_".$i."\").value, document.getElementById(\"cartera_".$i."\").innerHTML, document.getElementById(\"usuarioGestor_".$i."\").value,  document.getElementById(\"tipoCuenta_".$i."\").value, document.getElementById(\"saldoActualT_".$i."\").innerHTML); } activarTabs();'>".$value['SITUACION_CUENTA']."</td>    
                                 <td align = 'center'><button type=\"button\" id=\"".$value['CLIENTE']."_".$value['CARTERA']."_".$value['CUENTA']."\" title=\"Copiar Gestión\" $bloquear onclick=\"this.disabled = true; copiarGestion(this.id, 'saldoActualT_".$i."');\" name=\"btn_Copiar\"><img width=\"20px\" heigth=\"20px\" src=\"img/ico/copy.ico\"/></button></td>
@@ -2110,7 +2122,9 @@ if (isset($_GET)) {
      // Se verifica si se recibe una variable selectAbonos por el metodo GET
     } else if (isset($_GET['selectAbonos'])) //=================================
     {
-         $formaPago = cargarFormaPago();
+        $cartera = $_GET['cartera'];
+        $cliente = $_GET['cliente'];
+         $formaPago = cargarFormaPago($cartera, $cliente);
          $arrBancos = cargarBancos();
          
           if (is_array($formaPago))
@@ -2929,12 +2943,12 @@ function validacion($sql, $tablaGestion, $grupoGestion, $codigoGestion, $armar =
             //print_r($v);
             // echo "<br>SQL:<br>";
             $query = "insert into SR_GESTION (".$campo_cad.") values (".$valores_cad.")";
-           $st = $conex->consulta($query);
+       //    $st = $conex->consulta($query);
            // echo $query;
 
     } else if ($respuesta == ""){
 
-      $st = $conex->consulta($sql);
+      //$st = $conex->consulta($sql);
 
 
     }

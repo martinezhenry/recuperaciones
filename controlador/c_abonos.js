@@ -27,7 +27,7 @@ function cargarAbonos(cuenta)
             contenedor.innerHTML = ajax.responseText;
            ///   $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
             llamaTodo('abonos-Tabla');
-            $('#AgregarActivo').val('0');
+         //   $('#AgregarActivo').val('0');
                          
 
         }

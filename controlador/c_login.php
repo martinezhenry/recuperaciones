@@ -12,7 +12,7 @@ if (isset($_POST)){
     $conex = new oracle($usuario,$password);
     
         $paso = $conex->get_paso();
-     echo $paso. "  este es paso" ;
+   //  echo $paso. "  este es paso" ;
     if ($paso == "1"){
         
         
@@ -66,6 +66,10 @@ if (isset($_POST)){
             
               header("Location: ../vista/login.php?alert=".md5("block"));
             exit();
+       } else {
+           
+           echo "<h2 style='color:red;text-align:center'>ERROR EN LA CONEXION. ".oci_error()['message']."</h2>";
+           
        }
        
         

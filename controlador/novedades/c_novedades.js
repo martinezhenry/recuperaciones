@@ -51,11 +51,11 @@ function marcarVisto(){
      };
      
      $('input[name="checkNovedad"]:checked').each(function(idx){
-         
-         ids.push($(this).val());
+        var di = ($(this).val()).split(';')[0];
+         ids.push(di);
          
      });
-   //  alert(ids);
+ 
     $.ajax({
         
         type : 'post',
@@ -110,9 +110,59 @@ function mTodos(){
     
 }
 
+function enviarExpedi(){
+    
+    var checks = document.getElementsByName('checkNovedad');
+  
+   
+    
+ 
+    
+    		var count = 0;
+		var ids = new Array();
+
+		 for (var i=0; i < checks.length; i++) {
+           	if (checks[i].checked) {    
+              // CUENTAS[count] = checks[i].value;
+               count++;
+            }
+         }
+         //alert(CUENTAS.join());
+         if(count>0){
+             
+             var html = "";
+          //  $("<form id='form_novedad'></form>");
+             html = "<form hidden id='formNovedad' method='post' action='?pantalla=7e0c6ba9785691fecdb2418d503d2aab'>";
+            $('input[name="checkNovedad"]:checked').each(function(idx){
+            var di = ($(this).val()).split(';')[1];
+            html += "<input type='checkbox' name='checkcuentas[]' checked value='"+di+"' />";
+         
+            });
+            
+            
+            html += "</from>";
+             
+             $('body').append(html);
+             
+            // $('#formNovedad').submit();
+            var formulario = document.getElementById('formNovedad');
+            // 
+         //    alert(formulario);
+             
+              window.open('?pantalla=7e0c6ba9785691fecdb2418d503d2aab','myWin','toolbars=0, width=950,height=600,fullscreen=1'); 
+              formulario.target='myWin';
+              formulario.submit();
+         
+            }
+         else
+         	alert('No existen seleccionadas');
+    
+    
+}
+
 $(document).ready(function(){
         
         pintarTabla();
-        $(this).attr('title', 'Novedades');
+        //$(this).attr('title', 'Novedades');
        
         });

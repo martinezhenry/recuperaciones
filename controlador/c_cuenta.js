@@ -133,13 +133,14 @@ function sumarUno(){
 
 function ArrCuentas(Persona, filtro)
 {
-   
+   $('#AgregarActivo').val('0');
     var y = [];
     y = Persona.split("*");
    
     if (filtro == "NULL"){
     consultarDeudor("NULL", y[0]);
     } else {
+        
     consultarCuentas2(y[0]);
     //consultarDeudor("NULL", y);
     activarTabs();

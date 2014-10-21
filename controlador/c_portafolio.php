@@ -84,13 +84,15 @@ function reasignarCuentas($usuarioSolicitante, $traslados, $usuarioTraslado){
                   AND P.PERSONA = '$value'";
 
         $st = $conex->consulta($sql);
+        
+       // echo $sql;
         }
 
         // LLAMADO DEL PAQUETE;
         $sql = "BEGIN VPCTOTAL.P_TRASLADO_CUENTAS_NEW; end;";
         $st = $conex->consulta($sql);
         echo $po['not_tab2'];
-
+        exit();
     
     }
 }
@@ -1512,7 +1514,7 @@ select CU.PERSONA,
             }
         } else {
             
-            $cuentasAsignadas = cargarCuentasAsiganadas($usuario, $sql);
+           $cuentasAsignadas = cargarCuentasAsiganadas($usuario, $sql);
             
         }
         

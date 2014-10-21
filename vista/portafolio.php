@@ -15,6 +15,7 @@ $portafolio = '
                         <input hidden id ="statusUsado" name="statusUsado" value="NULL" type="text"/>
                         <input hidden id ="limiteInicio" name="limiteInicio" type="text"/>
                         <input hidden id ="limiteFin" name="limiteFin" type="text"/>
+                        <input hidden id ="clienteActual" type="text"/>
                        
                      <div style="overflow: auto; width: 100%;">
                       <fieldset>

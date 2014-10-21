@@ -14,10 +14,13 @@ $novedades = '
 
 <script src="../controlador/novedades/c_novedades.js"></script>
             <div>
-                 <form class=\'sky-form\'>
+                 <form id="form_novedad" method="post" action="?pantalla='.md5('expediente').'" class=\'sky-form\'>
                   <fieldset style=\'height: 90%;\'>
                   
-                <div><a href="#" onclick="marcarVisto();">Marcar como visto</a></div>
+                <div><a href="#" onclick="marcarVisto();">Marcar como visto</a>
+                <a href="#" onclick="enviarExpedi();">Expediente</a>
+             
+                </div>
 
                   <div style="height: 95%; overflow : auto;">
                 <table style=\'width: 100%; font-size: 11px;\' cellpadding=\'0\' cellspacing=\'0\' border=\'0\' class=\'display dataTable\' id=\'table_Novedades\'>
@@ -46,8 +49,8 @@ if (!$datos){
     
     foreach ($datos as $value) {
     $novedades .= "<tr >";
-    $novedades .= "<td class='center'><input name='checkNovedad' type='checkbox' value='".$value['ID_NOVEDAD']."' /></td>";
-    $novedades .= "<td class='center'>".$value['CEDULA']."</td>";
+    $novedades .= "<td class='center'><input name='checkNovedad' type='checkbox' value='".$value['ID_NOVEDAD'].";".$value['PERSONA']."' /></td>";
+    $novedades .= "<td class='center'>".$value['CEDULA']."<div hidden id='personaId'>".$value['PERSONA']."</div></td>";
     $novedades .= "<td class='center'>".$value['NOMBRE']."</td>";
     $novedades .= "<td class='center'>".$value['NOVEDAD']."</td>";
     $novedades .= "<td class='center'>".$value['STATUS']."</td>";

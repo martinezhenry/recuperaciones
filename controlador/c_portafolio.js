@@ -16,6 +16,7 @@ function cargarAsignaciones(agrega,usuario, identificador, filtro, status, clien
     var tabla = document.getElementById("asignaciones-Tabla");
 
     document.getElementById('statusUsado').value = status;
+    document.getElementById('clienteActual').value = cliente;
     usuarioActual.value = usuario;
     activarDesactivarSelects(['filtroExoneracion', 'filtroConvenio', 'filtroArea'], 1);
     activarDesactivarBotones(['btnVerExpediente']);
@@ -292,6 +293,8 @@ function reasignarCuentas()
         {
 
            alert(ajax.responseText);
+           
+           alert($('#clienteActual').val());
            cargarAsignaciones('NULL',usuario,  identificador, filtro, $('#statusUsado').val(), $('#clienteActual').val());
            
           

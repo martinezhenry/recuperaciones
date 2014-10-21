@@ -24,7 +24,9 @@ function consultarNovedad(){
          $sql = "SELECT * FROM SR_NOVEDADES";
      }
     */
-    $sql = "SELECT * FROM SR_NOVEDADES WHERE USUARIO_GESTOR = '".$_SESSION['USER']."' order by fecha_ingreso desc";
+    $sql = "SELECT max(id_novedad) as id_novedad, persona, cedula, nombre, novedad, status, fecha_ingreso FROM SR_NOVEDADES WHERE USUARIO_GESTOR = '".$_SESSION['USER']."'
+ group by persona, cedula, nombre, novedad, status, fecha_ingreso
+ order by fecha_ingreso desc";
     
     global $conex;
     
@@ -52,7 +54,7 @@ function verificarNovedad(){
          $sql = "SELECT * FROM SR_NOVEDADES";
      }
     */
-    $sql = "SELECT id_novedades FROM SR_NOVEDADES WHERE USUARIO_GESTOR = '".$_SESSION['USER']."' and status = '0'";
+    $sql = "SELECT id_novedad FROM SR_NOVEDADES WHERE USUARIO_GESTOR = '".$_SESSION['USER']."' and status = '0'";
     
     global $conex;
     

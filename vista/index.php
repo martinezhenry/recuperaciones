@@ -7,6 +7,12 @@ if (!isset($_SESSION['USER'])){
     exit();
 }
 
+  if (!isset($_GET[md5('unem')]) && !isset($_GET['pantalla']))
+                               {
+                                   header('location:?'.md5('unem'));              
+                               }
+
+
 
 $_SESSION['raiz'] = "c:/Recuperaciones";
 ($_SESSION['lang'] === 'es') ? require_once $_SESSION['ROOT_PATH'].'/vista/language/es.conf' : require_once $_SESSION['ROOT_PATH'].'/vista/language/en.conf';
@@ -347,7 +353,7 @@ color: #ee9393;
                               
                                }
                                
-                                                           
+                             
                                echo $agenda;
                         }
                         

@@ -131,6 +131,7 @@ function cargarCuentas(idPersona)
               
             //  alert($('#cuentas-Tabla tbody tr:first td:nth-child(2)').text());
               $('#cuentas-Tabla tbody tr:first td:nth-child(2)').click();
+              $('#cuentas-Tabla tbody tr:first').attr('class', 'gradeA odd row_selected');
               llamaTodo('cuentas-Tabla');
       
 

@@ -192,12 +192,16 @@ public function cargarTabla($idpersona)
           
       } else {
         $fecha = date("d/m/Y");
-
+            
+        if (empty($cod_area) || empty($telefono)){
+            echo "No debe dejar campos vacios";
+            return;
+        }
 
         $sql = "INSERT INTO TG_PERSONA_TEL_ADI D
             (PERSONA, COD_AREA, TELEFONO, FUENTE, STATUS_TELEFONO, USUARIO_INGRESO, FECHA_INGRESO)
             VALUES
-            ('$persona','$cod_area','$telefono','1','A','$usuario','$fecha')";
+            ('$persona','$cod_area','$telefono','1','A','$usuario','SYSDATE')";
 
         $this->conn->consulta($sql);
 

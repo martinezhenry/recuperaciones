@@ -858,6 +858,7 @@ class C_agenda extends Oracle {
    //Retornamos los resultados
    
    $this->cargar_tabla_resumen_portafolio($result, $asesor, $Fecha_p);//Cargamos la nueva tabla con los datos segun la fecha
+   
   }
   //===========================================================================================================================
 
@@ -870,6 +871,13 @@ class C_agenda extends Oracle {
   private function cargar_tabla_resumen_portafolio($array, $asesor, $fecha_esta='') {
     // Verificamos si existe informacion contenida en el array
       global $ag;
+      $TOTAL_cuentas  = 0;// Declaramos la variable para contar las cuentas
+      $TOTAL_deudores = 0;// Declaramos la variable para contar los deudores
+      $TOTAL_saldo    = 0;
+      $monto  = 0;// Declaramos la variable para contar las cuentas
+      $efectividad = 0;// Declaramos la variable para contar los deudores
+      $meta    = 0;
+      
     if(isset($array)) {
       $TOTAL_cuentas  = 0;// Declaramos la variable para contar las cuentas
       $TOTAL_deudores = 0;// Declaramos la variable para contar los deudores
@@ -1120,7 +1128,9 @@ echo '<section class="col col-6" id="pepito" style="width: 252px;float: rigth;mi
       
       $mes = $result3[0]['FECHA'];
      // echo ($mes);
-      
+      if (empty($mes)){
+          $mes = date('m');
+      }
 
      // $mes = date('m',$mes);
       echo $mes.'()';

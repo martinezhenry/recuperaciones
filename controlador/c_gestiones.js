@@ -77,7 +77,7 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
             gestiones.innerHTML = ajax.responseText;
           //  $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
             llamaTodo('gestiones-Tabla');
-            $('#AgregarActivo').val('0');
+         //   $('#AgregarActivo').val('0');
           
 
         }
@@ -369,8 +369,10 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                fProximaGestion.id = "fProximaGestion";
                fProximaGestion.style.width = "125px";
                fProximaGestion.className = "editar";
+               
               // fProximaGestion.setAttribute("onkeydown", "muestraInformacion(event, 10);");
                fProximaGestion.setAttribute("tabindex", "7");
+               
                cell9.className = "pb";
                cell9.appendChild(fProximaGestion);
                
@@ -380,13 +382,14 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                   
                 var hProximaGestion = document.createElement("input");
 
-               hProximaGestion.type = "text";
+               hProximaGestion.type = "time";
                hProximaGestion.name = "hProximagestion";
                hProximaGestion.id = "hProximaGestion";
                hProximaGestion.size = 6;
                hProximaGestion.className = "editar";
-               hProximaGestion.setAttribute("onkeydown", "muestraInformacion(event, 11);");
+             //  hProximaGestion.setAttribute("onkeydown", "muestraInformacion(event, 11);");
                hProximaGestion.setAttribute("tabindex", "8");
+             //  hProximaGestion.setAttribute("maxlength", "5");
                cell10.className = "pb";
                cell10.appendChild(hProximaGestion);
                
@@ -426,6 +429,8 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                        $('#guardar').attr('onclick', 'guardarGestion()');
                        $('#telefono').numeric(false);
                        $('#area').numeric(false);
+                       $('#mPromesa').numeric('.');
+                       $('#hProximaGestion').numeric(':');
                     //   alert($('#'+tableID+' .row_selected').text());
                        
                        $('#nueva').insertBefore(('#'+tableID+' .row_selected'));
@@ -664,14 +669,14 @@ function cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, sa
                     
               
                $('#guardar').attr('onclick', 'guardarAbonos($(\'#cuentaActual\').val())');
-               $('#montoAbono').numeric(',');
+               $('#montoAbono').numeric('.');
                $('#cuotaAbono').numeric(false);
                $('#nroDepositoAbono').numeric(false);
                $('#nueva').insertBefore(('#'+tableID+' .row_selected'));
                 }
             }
             
-               ajax.open("GET", "../controlador/c_deudor.php?selectAbonos=si", true);
+               ajax.open("GET", "../controlador/c_deudor.php?selectAbonos=si&cartera="+$('#carteraActual').val()+"&cliente="+$('#clienteActual').val(), true);
                ajax.send();
                
                
@@ -816,10 +821,12 @@ function guardarGestion(cuenta)
                    
                    alertify.success("Gestion Guardada.");
                   // validarCopia();
-                  cargarCuentas($('#personaActual').val());
-                   cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, saldoActualCuenta);
+                   $('#AgregarActivo').val('0');
+                    $('#gestiones-1').click();
+                //  cargarCuentas($('#personaActual').val());
+                //   cargarGestiones(cuenta, cliente, cartera, usuarioGestor, tipoCuenta, saldoActualCuenta);
                   // $('#cuentas-Tabla tbody tr td').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
-                   $('#gestiones-1').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
+                //   $('#gestiones-1').attr('onclick', 'cargarGestiones(cuentaActual.value, clienteActual.value, carteraActual.value, usuarioGestorActual.value, tipoCuentaActual.value, saldoActualCuenta.value);');
                } else {
                    
                    alertify.error(resp);
